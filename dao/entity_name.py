@@ -2,8 +2,10 @@
 # здесь в методах можно построить сложные запросы к БД
 
 # Например
-
-# class BookDAO:
-#     def get_all_books(self):
-#         books = Book.query.all()
+# from model.movies import Movie
+#
+#
+# class MovieDAO:
+#     def get_all_movies(self):
+#         movies = Movie.query.all()
 #         return
