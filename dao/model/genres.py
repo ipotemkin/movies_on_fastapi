@@ -4,7 +4,6 @@
 # Пример
 
 from setup_db import db
-from marshmallow import fields, Schema
 
 
 class Genre(db.Model):
@@ -14,6 +13,23 @@ class Genre(db.Model):
     movies = db.relationship('Movie')
 
 
+# OPTION #1
+from marshmallow import fields, Schema  # noqa
+
+
 class GenreSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
+
+
+# OPTION #2
+from pydantic import BaseModel  # noqa
+from typing import Optional  # noqa
+
+
+class GenreBM(BaseModel):
+    id: Optional[int]
+    name: str
+
+    class Config:
+        orm_mode = True

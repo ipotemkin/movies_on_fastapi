@@ -2,62 +2,62 @@
 # здесь в методах можно построить сложные запросы к БД
 
 # Например
-from dao.model.directors import Director, DirectorBM
+from dao.model.genres import Genre, GenreBM
 from setup_db import db
 from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError
 
 
-class DirectorDAO:
+class GenreDAO:
     @staticmethod
-    def get_all_directors():
-        if not (directors := Director.query.all()):
+    def get_all_genres():
+        if not (genres := Genre.query.all()):
             raise NotFoundError
-        # return DirectorSchema(many=True).dump(directors)
-        return [DirectorBM.from_orm(director).dict() for director in directors]
+        # return GenreSchema(many=True).dump(genres)
+        return [GenreBM.from_orm(genre).dict() for genre in genres]
 
     @staticmethod
-    def get_director_by_id(did: int):
-        if not (director := Director.query.get(did)):
+    def get_genre_by_id(gid: int):
+        if not (genre := Genre.query.get(gid)):
             raise NotFoundError
-        # return DirectorSchema().dump(director)
-        return DirectorBM.from_orm(director).dict()
+        # return GenreSchema().dump(genre)
+        return GenreBM.from_orm(genre).dict()
 
     @staticmethod
-    def make_director(new_director: dict):
-        if not new_director:
+    def make_genre(new_genre: dict):
+        if not new_genre:
             raise NoContentError
         try:
-            director = Director(**new_director)
+            genre = Genre(**new_genre)
         except Exception:
             raise BadRequestError
         try:
-            db.session.add(director)
+            db.session.add(genre)
             db.session.commit()
         except Exception:
             raise DatabaseError
 
     @staticmethod
-    def update_director(new_director: dict, did: int):
-        if not new_director:
+    def update_genre(new_genre: dict, gid: int):
+        if not new_genre:
             raise NoContentError
-        if not (director := Director.query.get(did)):
+        if not (genre := Genre.query.get(gid)):
             raise NotFoundError
-        if ('id' in new_director) and (did != new_director['id']):
+        if ('id' in new_genre) and (gid != new_genre['id']):
             raise BadRequestError
-        if 'name' in new_director:
-            director.name = new_director['name']
+        if 'name' in new_genre:
+            genre.name = new_genre['name']
         try:
-            db.session.add(director)
+            db.session.add(genre)
             db.session.commit()
         except Exception:
             raise DatabaseError
 
     @staticmethod
-    def delete_director(did: int):
-        if not (director := Director.query.get(did)):
+    def delete_genre(gid: int):
+        if not (genre := Genre.query.get(gid)):
             raise NotFoundError
         try:
-            db.session.delete(director)
+            db.session.delete(genre)
             db.session.commit()
         except Exception:
             raise DatabaseError
