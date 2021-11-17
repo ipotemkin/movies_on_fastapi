@@ -44,6 +44,23 @@ class MovieDAO:
         return [MovieBM.from_orm(movie).dict() for movie in movies]
 
     @staticmethod
+    def get_all_movies_by_filter(*, director_id=None, genre_id=None, year=None):
+        sql = "select * from movie"
+        sql_lst = []
+        if director_id:
+            sql_lst.append(f'director_id = {director_id}')
+        if genre_id:
+            sql_lst.append(f'genre_id = {genre_id}')
+        if year:
+            sql_lst.append(f'year = {year}')
+        if sql_lst:
+            sql += ' where ' + ' and '.join(sql_lst)
+
+        if not (movies := db.engine.execute(sql).fetchall()):
+            raise NotFoundError
+        return [MovieBM.from_orm(movie).dict() for movie in movies]
+
+    @staticmethod
     def make_movie(new_movie: dict):
         if not new_movie:
             raise NoContentError

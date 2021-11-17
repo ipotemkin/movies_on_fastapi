@@ -22,18 +22,27 @@ class MoviesView(Resource):
     def get():
         """
         Get all movies
+        You can additionally specify director_id, genre_id, year (any mix of these parameters)
         """
-        if director_id := parser.parse_args()['director_id']:
-            return MovieDAO.get_all_movies_by_director_id(director_id)
 
-        if genre_id := parser.parse_args()['genre_id']:
-            return MovieDAO.get_all_movies_by_genre_id(genre_id)
-
-        if year := parser.parse_args()['year']:
-            return MovieDAO.get_all_movies_by_year(year)
+        # SIMPLE OPTION
+        # if director_id := parser.parse_args()['director_id']:
+        #     return MovieDAO.get_all_movies_by_director_id(director_id)
+        #
+        # if genre_id := parser.parse_args()['genre_id']:
+        #     return MovieDAO.get_all_movies_by_genre_id(genre_id)
+        #
+        # if year := parser.parse_args()['year']:
+        #     return MovieDAO.get_all_movies_by_year(year)
 
         # return MovieService(MovieDAO()).get_movies(), 200
-        return MovieDAO.get_all_movies()
+        # return MovieDAO.get_all_movies()
+
+        # UNIVERSAL OPTION
+        director_id = parser.parse_args()['director_id']
+        genre_id = parser.parse_args()['genre_id']
+        year = parser.parse_args()['year']
+        return MovieDAO.get_all_movies_by_filter(director_id=director_id, genre_id=genre_id, year=year)
 
     @staticmethod
     def post():
