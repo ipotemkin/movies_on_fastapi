@@ -20,7 +20,9 @@ class MoviesView(Resource):
     @staticmethod
     @movie_ns.expect(parser)
     def get():
-
+        """
+        Get all movies
+        """
         if director_id := parser.parse_args()['director_id']:
             return MovieDAO.get_all_movies_by_director_id(director_id)
 
@@ -35,6 +37,9 @@ class MoviesView(Resource):
 
     @staticmethod
     def post():
+        """
+        Add a new movie
+        """
         if not (new_movie_json := request.json):
             raise NoContentError
         MovieDAO.make_movie(new_movie_json)
@@ -45,13 +50,17 @@ class MoviesView(Resource):
 class MovieView(Resource):
     @staticmethod
     def get(mid: int):
-        # movie_dao = MovieDAO()
-        # movie_service = MovieService(movie_dao)
+        """
+        Get a movie with the given mid
+        """
         # return MovieService(MovieDAO()).get_movies(), 200
         return MovieDAO.get_movie_by_id(mid)
 
     @staticmethod
     def patch(mid: int):
+        """
+        Update a movie with the given mid
+        """
         update_movie_json = request.json
         if not update_movie_json:
             raise NoContentError
@@ -59,4 +68,7 @@ class MovieView(Resource):
 
     @staticmethod
     def delete(mid: int):
+        """
+        Delete a movie with the given mid
+        """
         return MovieDAO.delete_movie(mid), 204
