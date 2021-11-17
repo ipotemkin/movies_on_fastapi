@@ -2,23 +2,25 @@
 # здесь в методах можно построить сложные запросы к БД
 
 # Например
-from model.movies import Movie, MovieSchema
+from dao.model.movies import Movie, MovieSchema, MovieBM
 from setup_db import db
 from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError
 
 
 class MovieDAO:
     @staticmethod
-    def get_all_movies(self):
+    def get_all_movies():
         if not (movies := Movie.query.all()):
             raise NotFoundError
-        return MovieSchema(many=True).dump(movies)
+        # return MovieSchema(many=True).dump(movies)
+        return [MovieBM.from_orm(movie).dict() for movie in movies]
 
     @staticmethod
-    def get_movie_by_id(self, mid: int):
+    def get_movie_by_id(mid: int):
         if not (movie := Movie.query.get(mid)):
             raise NotFoundError
-        return MovieSchema().dump(movie)
+        # return MovieSchema().dump(movie)
+        return MovieBM.from_orm(movie).dict()
 
     @staticmethod
     def get_all_movies_by_director_id(self, did: int):

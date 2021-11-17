@@ -4,7 +4,6 @@
 # Пример
 
 from setup_db import db
-from marshmallow import fields, Schema
 
 
 class Movie(db.Model):
@@ -17,7 +16,10 @@ class Movie(db.Model):
     title = db.Column(db.String)
     trailer = db.Column(db.String)
     year = db.Column(db.Integer)
-    directors = db.relationship('Director')
+    # directors = db.relationship('Director')
+
+# OPTION #1
+from marshmallow import fields, Schema  # noqa
 
 
 class MovieSchema(Schema):
@@ -29,3 +31,22 @@ class MovieSchema(Schema):
     title = fields.Str()
     trailer = fields.Str()
     year = fields.Int()
+
+
+# OPTION #2
+from pydantic import BaseModel  # noqa
+from typing import Optional  # noqa
+
+
+class MovieBM(BaseModel):
+    id: Optional[int]
+    description: str
+    director_id: int
+    genre_id: int
+    rating: float
+    title: str
+    trailer: str
+    year: int
+
+    class Config:
+        orm_mode = True

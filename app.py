@@ -7,10 +7,11 @@ from flask import Flask
 from flask_restx import Api
 
 from config import Config
-from models import Review, Book
 from setup_db import db
-from views.books import book_ns
-from views.reviews import review_ns
+from views.movies import movie_ns
+# from views.reviews import review_ns
+from errors import NotFoundError
+
 
 # функция создания основного объекта app
 def create_app(config_object):
@@ -24,8 +25,8 @@ def create_app(config_object):
 def register_extensions(app):
     db.init_app(app)
     api = Api(app)
-    api.add_namespace(...)
-    create_data(app, db)
+    api.add_namespace(movie_ns)
+    # create_data(app, db)
 
 
 # функция
@@ -35,12 +36,19 @@ def create_data(app, db):
 
         # создать несколько сущностей чтобы добавить их в БД
 
-        with db.session.begin():
-            db.session.add_all(здесь список созданных объектов)
+        # with db.session.begin():
+        #     db.session.add_all(здесь список созданных объектов)
 
 
 app = create_app(Config())
 app.debug = True
+
+
+@app.errorhandler(404)
+@app.errorhandler(NotFoundError)
+def not_found_error(error):
+    return "Not Found", 404
+
 
 if __name__ == '__main__':
     app.run(host="localhost", port=10001, debug=True)
