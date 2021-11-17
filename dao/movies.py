@@ -65,27 +65,27 @@ class MovieDAO:
             raise NotFoundError
         if ('id' in new_movie) and (mid != new_movie['id']):
             raise BadRequestError
-        if 'description' in new_movie:
-            movie.description = new_movie['description']
-        if 'director_id' in new_movie:
-            movie.director_id = new_movie['director_id']
-        if 'genre_id' in new_movie:
-            movie.genre_id = new_movie['genre_id']
-        if 'rating' in new_movie:
-            movie.rating = new_movie['rating']
-        if 'title' in new_movie:
-            movie.title = new_movie['title']
-        if 'trailer' in new_movie:
-            movie.trailer = new_movie['trailer']
-        if 'year' in new_movie:
-            movie.year = new_movie['year']
-        #
-        # try:
-        #     # for field in new_movie.keys():
-        #     #     if field != 'id':
-        #     #         movie.__dict__[field] = new_movie[field]
-        # except Exception:
-        #     raise BadRequestError
+        # if 'description' in new_movie:
+        #     movie.description = new_movie['description']
+        # if 'director_id' in new_movie:
+        #     movie.director_id = new_movie['director_id']
+        # if 'genre_id' in new_movie:
+        #     movie.genre_id = new_movie['genre_id']
+        # if 'rating' in new_movie:
+        #     movie.rating = new_movie['rating']
+        # if 'title' in new_movie:
+        #     movie.title = new_movie['title']
+        # if 'trailer' in new_movie:
+        #     movie.trailer = new_movie['trailer']
+        # if 'year' in new_movie:
+        #     movie.year = new_movie['year']
+
+        try:
+            for field in new_movie.keys():
+                if field != 'id':
+                    setattr(movie, field, new_movie[field])
+        except Exception:
+            raise BadRequestError
         try:
             db.session.add(movie)
             db.session.commit()

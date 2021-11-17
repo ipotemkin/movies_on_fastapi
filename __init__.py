@@ -7,6 +7,8 @@ from views.movies import movie_ns
 from views.directors import director_ns
 from views.genres import genre_ns
 from dao.model.movies import Movie
+from dao.model.directors import Director
+from dao.model.genres import Genre
 
 
 # функция создания основного объекта app
