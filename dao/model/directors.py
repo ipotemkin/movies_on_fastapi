@@ -4,7 +4,6 @@
 # Пример
 
 from setup_db import db
-from marshmallow import fields, Schema
 
 
 class Director(db.Model):
@@ -14,6 +13,23 @@ class Director(db.Model):
     movies = db.relationship('Movie')
 
 
+# OPTION #1
+from marshmallow import fields, Schema  # noqa
+
+
 class DirectorSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
+
+
+# OPTION #2
+from pydantic import BaseModel  # noqa
+from typing import Optional  # noqa
+
+
+class DirectorBM(BaseModel):
+    id: Optional[int]
+    name: str
+
+    class Config:
+        orm_mode = True

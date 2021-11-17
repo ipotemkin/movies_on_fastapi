@@ -2,7 +2,7 @@
 # здесь в методах можно построить сложные запросы к БД
 
 # Например
-from dao.model.movies import Movie, MovieSchema, MovieBM
+from dao.model.movies import Movie, MovieBM
 from setup_db import db
 from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError
 
@@ -58,7 +58,7 @@ class MovieDAO:
             raise DatabaseError
 
     @staticmethod
-    def update_movie(new_movie, mid: int):
+    def update_movie(new_movie: dict, mid: int):
         if not new_movie:
             raise NoContentError
         if not (movie := Movie.query.get(mid)):
@@ -81,7 +81,6 @@ class MovieDAO:
             movie.year = new_movie['year']
         #
         # try:
-        #     movie.__dict__['title'] = 'test'  # new_movie['title']
         #     # for field in new_movie.keys():
         #     #     if field != 'id':
         #     #         movie.__dict__[field] = new_movie[field]

@@ -10,13 +10,13 @@ class Movie(db.Model):
     __tablename__ = 'movie'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String)
-    director_id = db.Column(db.Integer)  # , db.ForeignKey('director.id'))
-    genre_id = db.Column(db.Integer)  # , db.ForeignKey('genre.id'))
+    director_id = db.Column(db.Integer, db.ForeignKey('director.id'))
+    genre_id = db.Column(db.Integer, db.ForeignKey('genre.id'))
     rating = db.Column(db.Float)
     title = db.Column(db.String)
     trailer = db.Column(db.String)
     year = db.Column(db.Integer)
-    # directors = db.relationship('Director')
+    directors = db.relationship('Director')
 
     def __repr__(self):
         return f"<Movie({self.title})>"
