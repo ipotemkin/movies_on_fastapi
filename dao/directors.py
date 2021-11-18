@@ -9,21 +9,21 @@ from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError
 
 class DirectorDAO:
     @staticmethod
-    def get_all_directors():
+    def get_all():
         if not (directors := Director.query.all()):
             raise NotFoundError
         # return DirectorSchema(many=True).dump(directors)
         return [DirectorBM.from_orm(director).dict() for director in directors]
 
     @staticmethod
-    def get_director_by_id(did: int):
+    def get_one(did: int):
         if not (director := Director.query.get(did)):
             raise NotFoundError
         # return DirectorSchema().dump(director)
         return DirectorBM.from_orm(director).dict()
 
     @staticmethod
-    def make_director(new_director: dict):
+    def create(new_director: dict):
         if not new_director:
             raise NoContentError
         try:
@@ -37,7 +37,7 @@ class DirectorDAO:
             raise DatabaseError
 
     @staticmethod
-    def update_director(new_director: dict, did: int):
+    def update(new_director: dict, did: int):
         if not new_director:
             raise NoContentError
         if not (director := Director.query.get(did)):
@@ -53,7 +53,7 @@ class DirectorDAO:
             raise DatabaseError
 
     @staticmethod
-    def delete_director(did: int):
+    def delete(did: int):
         if not (director := Director.query.get(did)):
             raise NotFoundError
         try:
