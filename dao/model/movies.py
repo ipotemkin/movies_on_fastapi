@@ -4,6 +4,8 @@
 # Пример
 
 from setup_db import db
+from dao.model.directors import DirectorBM
+from dao.model.genres import GenreBM
 
 
 class Movie(db.Model):
@@ -16,7 +18,8 @@ class Movie(db.Model):
     title = db.Column(db.String)
     trailer = db.Column(db.String)
     year = db.Column(db.Integer)
-    directors = db.relationship('Director')
+    director = db.relationship('Director')
+    genre = db.relationship('Genre')
 
     def __repr__(self):
         return f"<Movie({self.title})>"
@@ -41,6 +44,20 @@ from pydantic import BaseModel  # noqa
 from typing import Optional  # noqa
 
 
+class MovieBMSimple(BaseModel):
+    id: Optional[int]
+    description: str
+    director_id: int
+    genre_id: int
+    rating: float
+    title: str
+    trailer: str
+    year: int
+
+    class Config:
+        orm_mode = True
+
+
 class MovieBM(BaseModel):
     id: Optional[int]
     description: str
@@ -50,6 +67,8 @@ class MovieBM(BaseModel):
     title: str
     trailer: str
     year: int
+    director: DirectorBM
+    genre: GenreBM
 
     class Config:
         orm_mode = True

@@ -2,7 +2,7 @@
 # здесь в методах можно построить сложные запросы к БД
 
 # Например
-from dao.model.movies import Movie, MovieBM
+from dao.model.movies import Movie, MovieBM, MovieBMSimple
 from setup_db import db
 from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError
 
@@ -45,6 +45,9 @@ class MovieDAO:
 
     @staticmethod
     def get_all_movies_by_filter(*, director_id=None, genre_id=None, year=None):
+        """
+        Get movies with a filter by director_id, genre_id, year using SQLAlchemy CORE.
+        """
         sql = "select * from movie"
         sql_lst = []
         if director_id:
@@ -57,6 +60,23 @@ class MovieDAO:
             sql += ' where ' + ' and '.join(sql_lst)
 
         if not (movies := db.engine.execute(sql).fetchall()):
+            raise NotFoundError
+        return [MovieBMSimple.from_orm(movie).dict() for movie in movies]
+
+    @staticmethod
+    def get_all_movies_by_filter_orm(*, director_id=None, genre_id=None, year=None):
+        """
+        Get movies with a filter by director_id, genre_id, year using SQLAlchemy ORM.
+        """
+        req = {}
+        if director_id:
+            req['director_id'] = director_id
+        if genre_id:
+            req['genre_id'] = genre_id
+        if year:
+            req['year'] = year
+
+        if not (movies := Movie.query.filter_by(**req).all() if req else Movie.query.all()):
             raise NotFoundError
         return [MovieBM.from_orm(movie).dict() for movie in movies]
 
