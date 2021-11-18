@@ -10,7 +10,7 @@ class Genre(db.Model):
     __tablename__ = 'genre'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    movies = db.relationship('Movie')
+    movies = db.relationship('Movie', backref='genre_', lazy='dynamic')
 
 
 # OPTION #1

@@ -23,28 +23,28 @@ class MovieDAO:
         return MovieBM.from_orm(movie).dict()
 
     @staticmethod
-    def get_all_movies_by_director_id(did: int):
+    def get_movies_by_director_id(did: int):
         if not (movies := Movie.query.filter(Movie.director_id == did).all()):
             raise NotFoundError
         # return MovieSchema(many=True).dump(movies)
         return [MovieBM.from_orm(movie).dict() for movie in movies]
 
     @staticmethod
-    def get_all_movies_by_genre_id(gid: int):
+    def get_movies_by_genre_id(gid: int):
         if not (movies := Movie.query.filter(Movie.genre_id == gid).all()):
             raise NotFoundError
         # return MovieSchema(many=True).dump(movies)
         return [MovieBM.from_orm(movie).dict() for movie in movies]
 
     @staticmethod
-    def get_all_movies_by_year(year: int):
+    def get_movies_by_year(year: int):
         if not (movies := Movie.query.filter(Movie.year == year).all()):
             raise NotFoundError
         # return MovieSchema(many=True).dump(movies)
         return [MovieBM.from_orm(movie).dict() for movie in movies]
 
     @staticmethod
-    def get_all_movies_by_filter(*, director_id=None, genre_id=None, year=None):
+    def get_movies_by_filter(*, director_id=None, genre_id=None, year=None):
         """
         Get movies with a filter by director_id, genre_id, year using SQLAlchemy CORE.
         """
@@ -64,7 +64,7 @@ class MovieDAO:
         return [MovieBMSimple.from_orm(movie).dict() for movie in movies]
 
     @staticmethod
-    def get_all_movies_by_filter_orm(*, director_id=None, genre_id=None, year=None):
+    def get_movies_by_filter_orm(*, director_id=None, genre_id=None, year=None):
         """
         Get movies with a filter by director_id, genre_id, year using SQLAlchemy ORM.
         """

@@ -27,13 +27,13 @@ class MoviesView(Resource):
 
         # SIMPLE OPTION
         # if director_id := parser.parse_args()['director_id']:
-        #     return MovieDAO.get_all_movies_by_director_id(director_id)
+        #     return MovieDAO.get_movies_by_director_id(director_id)
         #
         # if genre_id := parser.parse_args()['genre_id']:
-        #     return MovieDAO.get_all_movies_by_genre_id(genre_id)
+        #     return MovieDAO.get_movies_by_genre_id(genre_id)
         #
         # if year := parser.parse_args()['year']:
-        #     return MovieDAO.get_all_movies_by_year(year)
+        #     return MovieDAO.get_movies_by_year(year)
         #
         # # return MovieService(MovieDAO()).get_movies(), 200
         # return MovieDAO.get_all_movies()
@@ -42,8 +42,7 @@ class MoviesView(Resource):
         director_id = parser.parse_args()['director_id']
         genre_id = parser.parse_args()['genre_id']
         year = parser.parse_args()['year']
-        return MovieDAO.get_all_movies_by_filter_orm(director_id=director_id, genre_id=genre_id, year=year)
-        # return MovieDAO.get_all_movies()
+        return MovieDAO.get_movies_by_filter_orm(director_id=director_id, genre_id=genre_id, year=year)
 
     @staticmethod
     def post():
