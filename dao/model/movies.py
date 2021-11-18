@@ -6,23 +6,24 @@
 from setup_db import db
 from dao.model.directors import DirectorBM
 from dao.model.genres import GenreBM
+# from dao.model.mixin import ApiMixin
 
 
 class Movie(db.Model):
     __tablename__ = 'movie'
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String)
-    director_id = db.Column(db.Integer, db.ForeignKey('director.id'))
-    genre_id = db.Column(db.Integer, db.ForeignKey('genre.id'))
-    rating = db.Column(db.Float)
-    title = db.Column(db.String)
-    trailer = db.Column(db.String)
-    year = db.Column(db.Integer)
+    description = db.Column(db.String, nullable=False)
+    director_id = db.Column(db.Integer, db.ForeignKey('director.id'), nullable=False)
+    genre_id = db.Column(db.Integer, db.ForeignKey('genre.id'), nullable=False)
+    rating = db.Column(db.Float, default=0.0)
+    title = db.Column(db.String, nullable=False)
+    trailer = db.Column(db.String, default="#")
+    year = db.Column(db.Integer, nullable=False)
     director = db.relationship('Director')
     genre = db.relationship('Genre')
 
-    def __repr__(self):
-        return f"<Movie({self.title})>"
+    # def __repr__(self):
+    #     return f"<Movie({self.title})>"
 
 # OPTION #1
 from marshmallow import fields, Schema  # noqa

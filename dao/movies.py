@@ -86,19 +86,22 @@ class MovieDAO:
             raise NoContentError
         try:
             movie = Movie(**new_movie)
-        except Exception:
+            MovieBMSimple.parse_obj(new_movie)  # to validate new data because I cannot migrate db
+        except Exception as e:
+            print(e)
             raise BadRequestError
         try:
             db.session.add(movie)
             db.session.commit()
         except Exception:
             raise DatabaseError
+        # Movie.create(**new_movie)
 
     @staticmethod
     def update_movie(new_movie: dict, mid: int):
         if not new_movie:
             raise NoContentError
-        if not (movie := Movie.query.get(mid)):
+        if not Movie.query.get(mid):
             raise NotFoundError
         if ('id' in new_movie) and (mid != new_movie['id']):
             raise BadRequestError
@@ -118,13 +121,14 @@ class MovieDAO:
         #     movie.year = new_movie['year']
 
         try:
-            for field in new_movie.keys():
-                if field != 'id':
-                    setattr(movie, field, new_movie[field])
+            Movie.query.filter(Movie.id == mid).update(new_movie)
+            # for field in new_movie.keys():
+            #     if field != 'id':
+            #         setattr(movie, field, new_movie[field])
         except Exception:
             raise BadRequestError
         try:
-            db.session.add(movie)
+            # db.session.add(movie)
             db.session.commit()
         except Exception:
             raise DatabaseError
@@ -138,3 +142,9 @@ class MovieDAO:
             db.session.commit()
         except Exception:
             raise DatabaseError
+
+    # @staticmethod
+    # def search(where: str, what: str):
+    #     if not (movies := Movie.query.filter(Movie.__dict__[where].like(f"'%{what}%'")).all()):
+    #         raise NotFoundError
+    #     return [MovieBM.from_orm(movie).dict() for movie in movies]

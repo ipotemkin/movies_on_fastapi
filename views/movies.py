@@ -81,3 +81,12 @@ class MovieView(Resource):
         Delete a movie with the given mid
         """
         return MovieDAO.delete_movie(mid), 204
+
+
+@movie_ns.route('/title')
+class MoviesTitleView(Resource):
+    @staticmethod
+    def get():
+        if not (what := request.args.get('s')):
+            raise NoContentError
+        return MovieDAO.search('title', what)
