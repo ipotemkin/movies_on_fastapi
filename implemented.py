@@ -5,3 +5,9 @@
 #
 # review_dao = ReviewDAO(db.session)
 # review_service = ReviewService(dao=review_dao)
+from dao.directors import DirectorDAO
+from service.directors import DirectorService
+from setup_db import db
+
+director_dao = DirectorDAO(session=db.session)
+director_service = DirectorService(director_dao=director_dao)
