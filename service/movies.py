@@ -18,8 +18,26 @@ from dao.movies import MovieDAO
 
 class MovieService:
 
-    def __init__(self, movie_dao: MovieDAO):
+    def __init__(self, movie_dao):
         self.movie_dao = movie_dao
 
-    def get_movies(self) -> list["Movie"]:
-        return self.movie_dao.get_all_movies()
+    def get_all(self):
+        return self.movie_dao.get_all()
+
+    def get_one(self, mid: int):
+        return self.movie_dao.get_one(mid)
+
+    def create(self, new_obj_d: dict):
+        return self.movie_dao.create(new_obj_d)
+
+    def update(self, new_obj_d: dict, mid: int):
+        return self.movie_dao.update(new_obj_d, mid)
+
+    def part_update(self):
+        pass
+
+    def delete(self, mid: int):
+        self.movie_dao.delete(mid)
+
+    def get_all_by_filter(self, director_id, genre_id, year):
+        return self.movie_dao.get_all_by_filter(director_id, genre_id, year)

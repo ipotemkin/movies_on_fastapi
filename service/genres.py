@@ -1,6 +1,3 @@
-# from dao.model.genres import genre
-# from errors import BadRequestError
-
 
 class GenreService:
     def __init__(self, genre_dao):

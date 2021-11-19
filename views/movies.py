@@ -4,9 +4,7 @@
 # Пример
 from flask import request
 from flask_restx import Resource, Namespace, reqparse
-from service.movies import MovieService
-from dao.movies import MovieDAO
-from errors import NoContentError
+from implemented import movie_service
 
 movie_ns = Namespace('movies')
 parser = reqparse.RequestParser()
@@ -24,34 +22,17 @@ class MoviesView(Resource):
         Get all movies
         You can additionally specify director_id, genre_id, year (any mix of these parameters)
         """
-
-        # SIMPLE OPTION
-        # if director_id := parser.parse_args()['director_id']:
-        #     return MovieDAO.get_movies_by_director_id(director_id)
-        #
-        # if genre_id := parser.parse_args()['genre_id']:
-        #     return MovieDAO.get_movies_by_genre_id(genre_id)
-        #
-        # if year := parser.parse_args()['year']:
-        #     return MovieDAO.get_movies_by_year(year)
-        #
-        # # return MovieService(MovieDAO()).get_movies(), 200
-        # return MovieDAO.get_all_movies()
-
-        # UNIVERSAL OPTION
         director_id = parser.parse_args()['director_id']
         genre_id = parser.parse_args()['genre_id']
         year = parser.parse_args()['year']
-        return MovieDAO.get_movies_by_filter_orm(director_id=director_id, genre_id=genre_id, year=year)
+        return movie_service.get_all_by_filter(director_id=director_id, genre_id=genre_id, year=year)
 
     @staticmethod
     def post():
         """
         Add a new movie
         """
-        if not (new_movie_json := request.json):
-            raise NoContentError
-        MovieDAO.make_movie(new_movie_json)
+        movie_service.create(request.json)
         return "", 201
 
 
@@ -62,31 +43,29 @@ class MovieView(Resource):
         """
         Get a movie with the given mid
         """
-        # return MovieService(MovieDAO()).get_movies(), 200
-        return MovieDAO.get_movie_by_id(mid)
+        return movie_service.get_one(mid)
 
     @staticmethod
     def patch(mid: int):
         """
         Update a movie with the given mid
         """
-        update_movie_json = request.json
-        if not update_movie_json:
-            raise NoContentError
-        return MovieDAO.update_movie(update_movie_json, mid), 204
+        movie_service.update(request.json, mid)
+        return "", 204
 
     @staticmethod
     def delete(mid: int):
         """
         Delete a movie with the given mid
         """
-        return MovieDAO.delete_movie(mid), 204
+        movie_service.delete(mid)
+        return "", 204
 
 
-@movie_ns.route('/title')
-class MoviesTitleView(Resource):
-    @staticmethod
-    def get():
-        if not (what := request.args.get('s')):
-            raise NoContentError
-        return MovieDAO.search('title', what)
+# @movie_ns.route('/title')
+# class MoviesTitleView(Resource):
+#     @staticmethod
+#     def get():
+#         if not (what := request.args.get('s')):
+#             raise NoContentError
+#         return MovieDAO.search('title', what)
