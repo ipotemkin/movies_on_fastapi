@@ -1,7 +1,6 @@
 # здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
 # сюда импортируются сервисы из пакета service
 
-# Пример
 from flask import request
 from flask_restx import Resource, Namespace, reqparse
 from implemented import movie_service
@@ -60,12 +59,3 @@ class MovieView(Resource):
         """
         movie_service.delete(mid)
         return "", 204
-
-
-# @movie_ns.route('/title')
-# class MoviesTitleView(Resource):
-#     @staticmethod
-#     def get():
-#         if not (what := request.args.get('s')):
-#             raise NoContentError
-#         return MovieDAO.search('title', what)

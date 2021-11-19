@@ -22,8 +22,8 @@ class Movie(db.Model):
     director = db.relationship('Director')
     genre = db.relationship('Genre')
 
-    # def __repr__(self):
-    #     return f"<Movie({self.title})>"
+    def __repr__(self):
+        return f"<Movie {self.title}>"
 
 # OPTION #1
 from marshmallow import fields, Schema  # noqa

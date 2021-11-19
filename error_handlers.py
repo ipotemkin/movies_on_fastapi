@@ -1,5 +1,4 @@
 from errors import NoContentError, NotFoundError, DatabaseError, BadRequestError
-# from flask import Flask
 
 
 def reg_error_handlers(app):
