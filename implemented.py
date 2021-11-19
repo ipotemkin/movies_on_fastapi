@@ -8,7 +8,16 @@
 from dao.model.directors import Director, DirectorBM
 from dao.directors import DirectorDAO
 from service.directors import DirectorService
+
+from dao.model.genres import Genre, GenreBM
+from dao.genres import GenreDAO
+from service.genres import GenreService
+
 from setup_db import db
 
 director_dao = DirectorDAO(session=db.session, model=Director, schema=DirectorBM)
 director_service = DirectorService(director_dao=director_dao)
+
+
+genre_dao = GenreDAO(session=db.session, model=Genre, schema=GenreBM)
+genre_service = GenreService(genre_dao=genre_dao)

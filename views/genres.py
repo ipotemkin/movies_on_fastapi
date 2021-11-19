@@ -4,9 +4,7 @@
 # Пример
 from flask import request
 from flask_restx import Resource, Namespace, reqparse
-# from service.genres import genreService
-from dao.genres import GenreDAO
-from errors import NoContentError
+from implemented import genre_service
 
 genre_ns = Namespace('genres')
 
@@ -18,17 +16,14 @@ class GenresView(Resource):
         """
         Get all genres
         """
-        # return GenreService(GenreDAO()).get_genres(), 200
-        return GenreDAO.get_all_genres()
+        return genre_service.get_all()
 
     @staticmethod
     def post():
         """
         Add a new genre
         """
-        if not (new_genre_json := request.json):
-            raise NoContentError
-        GenreDAO.make_genre(new_genre_json)
+        genre_service.create(request.json)
         return "", 201
 
 
@@ -39,22 +34,20 @@ class GenreView(Resource):
         """
         Get a genre with the given gid
         """
-        # return GenreService(GenreDAO()).get_genres(), 200
-        return GenreDAO.get_genre_by_id(gid)
+        return genre_service.get_one(gid)
 
     @staticmethod
     def patch(gid: int):
         """
         Update a genre with the given gid
         """
-        update_genre_json = request.json
-        if not update_genre_json:
-            raise NoContentError
-        return GenreDAO.update_genre(update_genre_json, gid), 204
+        genre_service.update(request.json, gid)
+        return "", 204
 
     @staticmethod
     def delete(gid: int):
         """
         Delete a genre with the given gid
         """
-        return GenreDAO.delete_genre(gid), 204
+        genre_service.delete(gid)
+        return "", 204

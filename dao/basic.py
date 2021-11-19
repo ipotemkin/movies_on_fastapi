@@ -17,10 +17,10 @@ class BasicDAO:
             raise NotFoundError
         return [self.schema.from_orm(obj).dict() for obj in objs]
 
-    def get_one(self, did: int):
-        # if not (obj := self.session.query(obj).get(did)):
+    def get_one(self, uid: int):
+        # if not (obj := self.session.query(obj).get(uid)):
         #     raise NotFoundError
-        obj = self.session.query(self.model).get_or_404(did)
+        obj = self.session.query(self.model).get_or_404(uid)
         return self.schema.from_orm(obj).dict()
 
     def create(self, new_obj: dict):
@@ -36,21 +36,21 @@ class BasicDAO:
         except Exception:
             raise DatabaseError
 
-    def update(self, new_obj: dict, did: int):
+    def update(self, new_obj: dict, uid: int):
         if not new_obj:
             raise NoContentError
-        if not self.model.query.get(did):
+        if not self.model.query.get(uid):
             raise NotFoundError
-        if ('id' in new_obj) and (did != new_obj['id']):
+        if ('id' in new_obj) and (uid != new_obj['id']):
             raise BadRequestError
         try:
-            self.session.query(self.model).filter(self.model.id == did).update(new_obj)
+            self.session.query(self.model).filter(self.model.id == uid).update(new_obj)
             self.session.commit()
         except Exception:
             raise DatabaseError
 
-    def delete(self, did: int):
-        obj = self.session.query(self.model).get_or_404(did)
+    def delete(self, uid: int):
+        obj = self.session.query(self.model).get_or_404(uid)
         try:
             self.session.delete(obj)
             self.session.commit()
