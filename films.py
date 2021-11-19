@@ -15,6 +15,8 @@ from views.movies import movie_ns
 from views.directors import director_ns
 from views.genres import genre_ns
 
+from flask_migrate import Migrate
+
 
 # функция создания основного объекта app
 def create_app(config_object):
@@ -28,6 +30,7 @@ def create_app(config_object):
 # функция подключения расширений (Flask-SQLAlchemy, Flask-RESTx, ...)
 def register_extensions(app_):
     db.init_app(app_)
+    migrate = Migrate(app_, db)
     api = Api(app_)
     api.add_namespace(movie_ns)
     api.add_namespace(director_ns)
