@@ -1,7 +1,7 @@
 # это файл для классов доступа к данным (Data Access Object). Здесь должен быть класс с методами доступа к данным
 # здесь в методах можно построить сложные запросы к БД
 
-from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError
+from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError, ValidationError
 
 
 class BasicDAO:
@@ -25,10 +25,18 @@ class BasicDAO:
     def create(self, new_obj: dict):
         if not new_obj:
             raise NoContentError
+
+        # to check whether the new_obj meets the model; it will be unnecessary after DB migration
+        try:
+            self.schema.parse_obj(new_obj)
+        except Exception:
+            raise ValidationError
+
         try:
             obj = self.model(**new_obj)
         except Exception:
             raise BadRequestError
+
         try:
             self.session.add(obj)
             self.session.commit()

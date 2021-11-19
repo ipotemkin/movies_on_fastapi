@@ -1,4 +1,4 @@
-from errors import NoContentError, NotFoundError, DatabaseError, BadRequestError
+from errors import NoContentError, NotFoundError, DatabaseError, BadRequestError, ValidationError
 
 
 def reg_error_handlers(app):
@@ -19,3 +19,7 @@ def reg_error_handlers(app):
     @app.errorhandler(BadRequestError)
     def no_content_error(error):
         return "Bad Request", 400
+
+    @app.errorhandler(ValidationError)
+    def no_content_error(error):
+        return "Validation Error", 400
