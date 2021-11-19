@@ -11,16 +11,6 @@ class Director(db.Model):
     # movies = db.relationship('Movie', lazy='dynamic')
 
 
-# OPTION #1
-from marshmallow import fields, Schema  # noqa
-
-
-class DirectorSchema(Schema):
-    id = fields.Int(dump_only=True)
-    name = fields.Str()
-
-
-# OPTION #2
 from pydantic import BaseModel  # noqa
 from typing import Optional  # noqa
 

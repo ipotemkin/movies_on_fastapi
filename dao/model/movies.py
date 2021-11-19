@@ -1,8 +1,6 @@
 # здесь модель SQLAlchemy для сущности, также могут быть дополнительные методы работы с моделью
 # (но не с базой, с базой мы работает в классе DAO)
 
-# Пример
-
 from setup_db import db
 from dao.model.directors import DirectorBM
 from dao.model.genres import GenreBM
@@ -25,22 +23,7 @@ class Movie(db.Model):
     def __repr__(self):
         return f"<Movie {self.title}>"
 
-# OPTION #1
-from marshmallow import fields, Schema  # noqa
 
-
-class MovieSchema(Schema):
-    id = fields.Int(dump_only=True)
-    description = fields.Str()
-    director_id = fields.Int()
-    genre_id = fields.Int()
-    rating = fields.Float()
-    title = fields.Str()
-    trailer = fields.Str()
-    year = fields.Int()
-
-
-# OPTION #2
 from pydantic import BaseModel  # noqa
 from typing import Optional  # noqa
 
