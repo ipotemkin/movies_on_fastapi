@@ -14,26 +14,28 @@ db = SQLAlchemy(app)
 class Movie(db.Model):
     __tablename__ = 'movie'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255))
-    description = db.Column(db.String(255))
-    trailer = db.Column(db.String(255))
-    year = db.Column(db.Integer)
-    rating = db.Column(db.Integer)
-    genre_id = db.Column(db.Integer, db.ForeignKey("genre.id"))
-    genre = db.relationship("Genre")
-    director_id = db.Column(db.Integer, db.ForeignKey("director.id"))
-    director = db.relationship("Director")
+    description = db.Column(db.String, nullable=False)
+    director_id = db.Column(db.Integer, db.ForeignKey('director.id'), nullable=False)
+    genre_id = db.Column(db.Integer, db.ForeignKey('genre.id'), nullable=False)
+    rating = db.Column(db.Float, default=0.0)
+    title = db.Column(db.String, nullable=False)
+    trailer = db.Column(db.String, default="#")
+    year = db.Column(db.Integer, nullable=False)
+    director = db.relationship('Director')
+    genre = db.relationship('Genre')
 
 
 class Director(db.Model):
     __tablename__ = 'director'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String)
+
 
 class Genre(db.Model):
     __tablename__ = 'genre'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String)
+
 
 db.drop_all()
 db.create_all()
