@@ -10,6 +10,7 @@ from error_handlers import reg_error_handlers
 from dao.model.movies import Movie
 from dao.model.directors import Director
 from dao.model.genres import Genre
+from dao.model.users import User
 
 from views.movies import movie_ns
 from views.directors import director_ns
@@ -55,7 +56,7 @@ app = create_app(Config())
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'Movie': Movie, 'Director': Director, 'Genre': Genre}
+    return {'db': db, 'Movie': Movie, 'Director': Director, 'Genre': Genre, 'User': User}
 
 
 if __name__ == '__main__':

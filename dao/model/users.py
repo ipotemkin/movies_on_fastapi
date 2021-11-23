@@ -10,6 +10,9 @@ class User(db.Model):
     password = db.Column(db.String)
     role = db.Column(db.String)
 
+    def __repr__(self):
+        return f"<User: id={self.id}, username={self.username}, role={self.role}>"
+
 
 class UserBM(BaseModel):
     id: Optional[int]

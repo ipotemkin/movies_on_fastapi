@@ -19,11 +19,11 @@ class User(db.Model):
     role = db.Column(db.String)
 
     def __repr__(self):
-        return f"<Movie {self.username}>"
+        return f"<User {self.username}>"
 
 
 # db.drop_all()
-# db.create_all()
+db.create_all()
 
 u1 = User(username="vasya", password="my_little_pony", role="user")
 u2 = User(username="oleg", password="qwerty", role="user")
