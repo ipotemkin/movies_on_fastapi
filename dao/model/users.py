@@ -16,7 +16,9 @@ class User(db.Model):
 
 class UserBM(BaseModel):
     id: Optional[int]
-    name: str
+    username: str
+    # password: Optional[str]
+    role: str
 
     class Config:
         orm_mode = True

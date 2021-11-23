@@ -9,13 +9,17 @@ from dao.model.directors import Director, DirectorBM
 from dao.directors import DirectorDAO
 from service.directors import DirectorService
 
-from dao.model.genres import Genre, GenreBM
+from dao.model.movies import Movie, MovieBM, MovieBMSimple
 from dao.movies import MovieDAO
 from service.movies import MovieService
 
-from dao.model.movies import Movie, MovieBM, MovieBMSimple
+from dao.model.genres import Genre, GenreBM
 from dao.genres import GenreDAO
 from service.genres import GenreService
+
+from dao.model.users import User, UserBM
+from dao.users import UserDAO
+from service.users import UserService
 
 from setup_db import db
 
@@ -29,3 +33,6 @@ genre_service = GenreService(dao=genre_dao)
 
 movie_dao = MovieDAO(session=db.session, model=Movie, schema=MovieBMSimple, nested_schema=MovieBM)
 movie_service = MovieService(dao=movie_dao)
+
+user_dao = UserDAO(session=db.session, model=User, schema=UserBM)
+user_service = UserService(dao=user_dao)

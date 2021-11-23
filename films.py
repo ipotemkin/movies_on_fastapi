@@ -15,6 +15,7 @@ from dao.model.users import User
 from views.movies import movie_ns
 from views.directors import director_ns
 from views.genres import genre_ns
+from views.users import user_ns
 
 from flask_migrate import Migrate
 
@@ -38,6 +39,7 @@ def register_extensions(app_):
     api.add_namespace(movie_ns)
     api.add_namespace(director_ns)
     api.add_namespace(genre_ns)
+    api.add_namespace(user_ns)
     # create_data(app, db)
 
 
