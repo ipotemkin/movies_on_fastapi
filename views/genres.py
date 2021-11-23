@@ -1,12 +1,11 @@
 # здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
 # сюда импортируются сервисы из пакета service
 
-# Пример
 from flask import request
 from flask_restx import Resource, Namespace, reqparse
 from implemented import genre_service
 
-genre_ns = Namespace('genres')
+genre_ns = Namespace('genres', description="Жанры")
 
 
 @genre_ns.route('/')
@@ -19,12 +18,13 @@ class GenresView(Resource):
         return genre_service.get_all()
 
     @staticmethod
+    @genre_ns.response(201, 'Created', headers={'Location': 'genres_genre_view'})
     def post():
         """
         Add a new genre
         """
-        genre_service.create(request.json)
-        return "", 201
+        obj = genre_service.create(genre_ns.payload)
+        return "", 201, {'Location': obj.id}
 
 
 @genre_ns.route('/<int:gid>')

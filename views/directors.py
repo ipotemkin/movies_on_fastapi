@@ -1,15 +1,11 @@
 # здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
 # сюда импортируются сервисы из пакета service
 
-# Пример
 from flask import request
-from flask_restx import Resource, Namespace  # , reqparse
-# from service.directors import directorService
-# from dao.directors import DirectorDAO
-# from errors import NoContentError
+from flask_restx import Resource, Namespace
 from implemented import director_service
 
-director_ns = Namespace('directors')
+director_ns = Namespace('directors', description="Режиссеры")
 
 
 @director_ns.route('/')
@@ -22,12 +18,13 @@ class DirectorsView(Resource):
         return director_service.get_all()
 
     @staticmethod
+    @director_ns.response(201, 'Created', headers={'Location': 'directors_director_view'})
     def post():
         """
         Add a new director
         """
-        director_service.create(request.json)
-        return "", 201
+        obj = director_service.create(director_ns.payload)
+        return "", 201, {'Location': obj.id}
 
 
 @director_ns.route('/<int:did>')

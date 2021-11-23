@@ -42,6 +42,7 @@ class BasicDAO:
             self.session.commit()
         except Exception:
             raise DatabaseError
+        return obj
 
     def update(self, new_obj: dict, uid: int):
         if not new_obj:

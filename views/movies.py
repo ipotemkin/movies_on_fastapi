@@ -1,15 +1,14 @@
 # здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
 # сюда импортируются сервисы из пакета service
 
-from flask import request
 from flask_restx import Resource, Namespace, reqparse
 from implemented import movie_service
 
-movie_ns = Namespace('movies')
+movie_ns = Namespace('movies', description="Фильмы")
 parser = reqparse.RequestParser()
-parser.add_argument('director_id', type=int)
-parser.add_argument('genre_id', type=int)
-parser.add_argument('year', type=int)
+parser.add_argument('director_id', type=int, help='Фильтрация по id режиссера')
+parser.add_argument('genre_id', type=int, help='Фильтрация по id жанра')
+parser.add_argument('year', type=int, help='Фильтрация по году выпуска')
 
 
 @movie_ns.route('/')
@@ -25,15 +24,18 @@ class MoviesView(Resource):
         return movie_service.get_all_by_filter(req)
 
     @staticmethod
+    @movie_ns.response(201, 'Created', headers={'Location': 'movies_movie_view'})
     def post():
         """
         Add a new movie
         """
-        movie_service.create(request.json)
-        return "", 201
+        obj = movie_service.create(movie_ns.payload)
+        # movie_service.create(request.json)
+        return "", 201, {'Location': obj.id}
 
 
 @movie_ns.route('/<int:mid>')
+@movie_ns.doc(params={'mid': 'Идентификатор фильма'})
 class MovieView(Resource):
     @staticmethod
     def get(mid: int):
@@ -43,14 +45,16 @@ class MovieView(Resource):
         return movie_service.get_one(mid)
 
     @staticmethod
+    @movie_ns.response(204, 'Updated')
     def patch(mid: int):
         """
         Update a movie with the given mid
         """
-        movie_service.update(request.json, mid)
-        return "", 204
+        movie_service.update(movie_ns.payload, mid)
+        return {}, 204
 
     @staticmethod
+    @movie_ns.response(204, 'Deleted')
     def delete(mid: int):
         """
         Delete a movie with the given mid

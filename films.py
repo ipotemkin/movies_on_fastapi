@@ -31,7 +31,9 @@ def create_app(config_object):
 def register_extensions(app_):
     db.init_app(app_)
     migrate = Migrate(app_, db)
-    api = Api(app_)
+
+    api = Api()
+    api.init_app(app_, vrsion='1.0', title='REST API on Flask')
     api.add_namespace(movie_ns)
     api.add_namespace(director_ns)
     api.add_namespace(genre_ns)
