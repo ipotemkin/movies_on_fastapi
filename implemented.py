@@ -20,12 +20,12 @@ from service.genres import GenreService
 from setup_db import db
 
 director_dao = DirectorDAO(session=db.session, model=Director, schema=DirectorBM)
-director_service = DirectorService(director_dao=director_dao)
+director_service = DirectorService(dao=director_dao)
 
 
 genre_dao = GenreDAO(session=db.session, model=Genre, schema=GenreBM)
-genre_service = GenreService(genre_dao=genre_dao)
+genre_service = GenreService(dao=genre_dao)
 
 
 movie_dao = MovieDAO(session=db.session, model=Movie, schema=MovieBMSimple, nested_schema=MovieBM)
-movie_service = MovieService(movie_dao=movie_dao)
+movie_service = MovieService(dao=movie_dao)
