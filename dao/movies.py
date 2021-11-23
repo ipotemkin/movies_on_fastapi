@@ -7,18 +7,11 @@ from dao.basic import BasicDAO
 
 class MovieDAO(BasicDAO):
 
-    def get_all_by_filter(self, director_id=None, genre_id=None, year=None):
+    # def get_all_by_filter(self, director_id=None, genre_id=None, year=None):
+    def get_all_by_filter(self, req: dict):
         """
         Get movies with a filter by director_id, genre_id, year using SQLAlchemy ORM.
         """
-        req = {}
-        if director_id:
-            req['director_id'] = director_id
-        if genre_id:
-            req['genre_id'] = genre_id
-        if year:
-            req['year'] = year
-
         if not (movies := self.model.query.filter_by(**req).all() if req else self.model.query.all()):
             raise NotFoundError
         return [self.nested_schema.from_orm(movie).dict() for movie in movies]

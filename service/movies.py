@@ -25,5 +25,5 @@ class MovieService:
     def delete(self, mid: int):
         self.movie_dao.delete(mid)
 
-    def get_all_by_filter(self, director_id, genre_id, year):
-        return self.movie_dao.get_all_by_filter(director_id, genre_id, year)
+    def get_all_by_filter(self, *args, **kwargs):
+        return self.movie_dao.get_all_by_filter(*args, **kwargs)

@@ -21,10 +21,8 @@ class MoviesView(Resource):
         Get all movies
         You can additionally specify director_id, genre_id, year (any mix of these parameters)
         """
-        director_id = parser.parse_args()['director_id']
-        genre_id = parser.parse_args()['genre_id']
-        year = parser.parse_args()['year']
-        return movie_service.get_all_by_filter(director_id=director_id, genre_id=genre_id, year=year)
+        req = {key: value for key, value in parser.parse_args().items() if value is not None}
+        return movie_service.get_all_by_filter(req)
 
     @staticmethod
     def post():
