@@ -42,17 +42,9 @@ class MovieBMSimple(BaseModel):
         orm_mode = True
 
 
-class MovieBM(BaseModel):
-    id: Optional[int]
-    description: str
-    director_id: int
-    genre_id: int
-    rating: float
-    title: str
-    trailer: str
-    year: int
+class MovieBM(MovieBMSimple):
     director: DirectorBM
     genre: GenreBM
 
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True

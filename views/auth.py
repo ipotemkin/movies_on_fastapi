@@ -2,36 +2,37 @@ from flask_restx import Resource, Namespace
 from flask import jsonify, request, abort
 from implemented import user_service
 from errors import NoContentError
+from pydantic import BaseModel
+from flask_pydantic import validate
 
 auth_ns = Namespace('auth', description="Авторизация")
+
+
+class TokenRequest(BaseModel):
+    login: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
 
 
 @auth_ns.route('/')
 class AuthsView(Resource):
     @staticmethod
     @auth_ns.response(201, 'Created', headers={'Location': 'auth_auth_view'})
-    def post():
+    @validate()
+    def post(body: TokenRequest):
         """
         Generate tokens
         """
-        if not (data := auth_ns.payload):
-            raise NoContentError
-        # print(data)
+        if user_service.check_password(username=body.login, password=body.password):
+            data = body.dict()
+            return TokenResponse(access_token=user_service.gen_token(data),
+                                 refresh_token=user_service.gen_token(data)), 201
 
-        is_password_correct = user_service.check_password(id=data.get('id', None),
-                                           username=data.get('login', None),
-                                           password=data.get('password', None)
-                                           )
-        # user = user_service.check_password(data)
-        if is_password_correct:
-            res = {'access_token': user_service.gen_token(data),
-                   'refresh_token': user_service.gen_token(data)}
-            return res
         return "", 401
-        # return jsonify(auth_ns.payload)
-        # obj = auth_service.create(auth_ns.payload)
-        # return "", 201, {'Location': obj.id}
-        # pass
 
     # @staticmethod
     # @auth_ns.response(204, 'Updated', headers={'Location': 'auths_auth_view'})
