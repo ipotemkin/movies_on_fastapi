@@ -6,7 +6,7 @@ from typing import Optional
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String)
     role = db.Column(db.String)
 

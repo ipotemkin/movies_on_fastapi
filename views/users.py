@@ -1,16 +1,26 @@
 # здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
 # сюда импортируются сервисы из пакета service
 
-from flask import request
+from flask import request, abort
 from flask_restx import Resource, Namespace
 from implemented import user_service
 
 user_ns = Namespace('users', description="Пользователи")
 
 
+def auth_required(func):
+    def wrapper(*args, **kwargs):
+        if 'Authorization' not in request.headers:
+            abort(401)
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 @user_ns.route('/')
 class UsersView(Resource):
     @staticmethod
+    # @auth_required
     def get():
         """
         Get all users
