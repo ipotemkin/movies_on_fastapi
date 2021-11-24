@@ -36,3 +36,6 @@ movie_service = MovieService(dao=movie_dao)
 
 user_dao = UserDAO(session=db.session, model=User, schema=UserBM)
 user_service = UserService(dao=user_dao)
+
+# user_dao = UserDAO(session=db.session, model=User, schema=UserBM)
+# auth_service = UserService(dao=user_dao)

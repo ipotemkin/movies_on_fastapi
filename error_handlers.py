@@ -8,6 +8,7 @@ def reg_error_handlers(app):
     def not_found_error(error):
         return "Not Found", 404
 
+    # @app.errorhandler(204)
     @app.errorhandler(NoContentError)
     def no_content_error(error):
         return "No Content", 204

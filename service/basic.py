@@ -22,3 +22,6 @@ class BasicService:
 
     def delete(self, did: int):
         self.dao.delete(did)
+
+    def get_all_by_filter(self, *args, **kwargs):
+        return self.dao.get_all_by_filter(*args, **kwargs)

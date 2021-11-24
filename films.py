@@ -16,6 +16,7 @@ from views.movies import movie_ns
 from views.directors import director_ns
 from views.genres import genre_ns
 from views.users import user_ns
+from views.auth import auth_ns
 
 from flask_migrate import Migrate
 
@@ -24,6 +25,7 @@ from flask_migrate import Migrate
 def create_app(config_object):
     app_ = Flask(__name__)
     app_.config.from_object(config_object)
+    app_.url_map.strict_slashes = False
     register_extensions(app_)
     reg_error_handlers(app_)
     return app_
@@ -40,6 +42,8 @@ def register_extensions(app_):
     api.add_namespace(director_ns)
     api.add_namespace(genre_ns)
     api.add_namespace(user_ns)
+    api.add_namespace(auth_ns)
+
     # create_data(app, db)
 
 

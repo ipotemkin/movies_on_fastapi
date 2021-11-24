@@ -64,3 +64,8 @@ class BasicDAO:
             self.session.commit()
         except Exception:
             raise DatabaseError
+
+    def get_all_by_filter(self, req: dict):
+        if not (res := self.model.query.filter_by(**req).all() if req else self.model.query.all()):
+            raise NotFoundError
+        return [self.nested_schema.from_orm(obj).dict() for obj in res]
