@@ -1,6 +1,3 @@
-# здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
-# сюда импортируются сервисы из пакета service
-
 from flask import request, abort
 from flask_restx import Resource, Namespace
 from implemented import user_service
@@ -37,25 +34,26 @@ class UsersView(Resource):
         return "", 201, {'Location': obj.id}
 
 
-@user_ns.route('/<int:did>')
+@user_ns.route('/<int:uid>')
+@user_ns.doc(params={'uid': 'Идентификатор пользователя'})
 class UserView(Resource):
     @staticmethod
-    def get(did: int):
+    def get(uid: int):
         """
-        Get a user with the given did
+        Get a user with the given uid
         """
-        return user_service.get_one(did)
+        return user_service.get_one(uid)
 
     @staticmethod
-    def patch(did: int):
+    def patch(uid: int):
         """
-        Update a user with the given did
+        Update a user with the given uid
         """
-        return user_service.update(request.json, did), 204
+        return user_service.update(request.json, uid), 204
 
     @staticmethod
-    def delete(did: int):
+    def delete(uid: int):
         """
-        Delete a user with the given did
+        Delete a user with the given uid
         """
-        return user_service.delete(did), 204
+        return user_service.delete(uid), 204

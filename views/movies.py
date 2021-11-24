@@ -24,7 +24,8 @@ class MoviesView(Resource):
         return movie_service.get_all_by_filter(req)
 
     @staticmethod
-    @movie_ns.response(201, 'Created', headers={'Location': 'movies_movie_view'})
+    # @movie_ns.response(201, 'Created', headers={'Location': 'movies_movie_view'})
+    @movie_ns.response(201, 'Created', headers={'Location': 'url нового фильма'})
     def post():
         """
         Add a new movie

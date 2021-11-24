@@ -28,6 +28,7 @@ class GenresView(Resource):
 
 
 @genre_ns.route('/<int:gid>')
+@genre_ns.doc(params={'gid': 'Идентификатор жанра'})
 class GenreView(Resource):
     @staticmethod
     def get(gid: int):

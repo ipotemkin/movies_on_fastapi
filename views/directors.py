@@ -28,6 +28,7 @@ class DirectorsView(Resource):
 
 
 @director_ns.route('/<int:did>')
+@director_ns.doc(params={'did': 'Идентификатор режиссера'})
 class DirectorView(Resource):
     @staticmethod
     def get(did: int):
