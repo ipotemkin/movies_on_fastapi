@@ -17,7 +17,7 @@ class User(db.Model):
 class UserBM(BaseModel):
     id: Optional[int]
     username: str
-    # password: Optional[str]
+    password: Optional[str]
     role: str
 
     class Config:

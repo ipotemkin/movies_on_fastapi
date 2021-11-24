@@ -16,15 +16,18 @@ class AuthsView(Resource):
         """
         if not (data := auth_ns.payload):
             raise NoContentError
-        print(data)
+        # print(data)
 
-        user = user_service.check_password(id=data.get('id', None),
+        is_password_correct = user_service.check_password(id=data.get('id', None),
                                            username=data.get('login', None),
                                            password=data.get('password', None)
                                            )
         # user = user_service.check_password(data)
-
-        return user
+        if is_password_correct:
+            res = {'access_token': user_service.gen_token(data),
+                   'refresh_token': user_service.gen_token(data)}
+            return res
+        return "", 401
         # return jsonify(auth_ns.payload)
         # obj = auth_service.create(auth_ns.payload)
         # return "", 201, {'Location': obj.id}
