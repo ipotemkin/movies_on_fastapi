@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String)
     role = db.Column(db.String)
 
@@ -27,7 +27,7 @@ db.create_all()
 
 u1 = User(username="vasya", password="my_little_pony", role="user")
 u2 = User(username="oleg", password="qwerty", role="user")
-u3 = User(username="oleg", password="P@ssw0rd", role="admin")
+u3 = User(username="oleg2", password="P@ssw0rd", role="admin")
 
 with db.session.begin():
     db.session.add_all([u1, u2, u3])
