@@ -1,6 +1,3 @@
-# здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
-# сюда импортируются сервисы из пакета service
-
 from flask_restx import Resource, Namespace, reqparse
 from implemented import movie_service
 
@@ -31,7 +28,6 @@ class MoviesView(Resource):
         Add a new movie
         """
         obj = movie_service.create(movie_ns.payload)
-        # movie_service.create(request.json)
         return "", 201, {'Location': obj.id}
 
 

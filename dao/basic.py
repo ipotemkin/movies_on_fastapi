@@ -17,8 +17,6 @@ class BasicDAO:
         return [self.nested_schema.from_orm(obj).dict() for obj in objs]
 
     def get_one(self, uid: int):
-        # if not (obj := self.session.query(obj).get(uid)):
-        #     raise NotFoundError
         obj = self.session.query(self.model).get_or_404(uid)
         return self.nested_schema.from_orm(obj).dict()
 
@@ -47,12 +45,15 @@ class BasicDAO:
     def update(self, new_obj: dict, uid: int):
         if not new_obj:
             raise NoContentError
-        if not self.model.query.get(uid):
-            raise NotFoundError
+
         if ('id' in new_obj) and (uid != new_obj['id']):
             raise BadRequestError
+
+        q = self.session.query(self.model).filter(self.model.id == uid)
+        q.first_or_404()  # to test existence of the object
+
         try:
-            self.session.query(self.model).filter(self.model.id == uid).update(new_obj)
+            q.update(new_obj)
             self.session.commit()
         except Exception:
             raise DatabaseError
