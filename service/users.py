@@ -9,6 +9,7 @@ from errors import BadRequestError, NotFoundError
 import datetime
 import calendar
 from pydantic import BaseModel
+from flask import abort  # TODO: exclude flask
 
 # TODO: Нужно ли передавать пароль для генерации токена?
 # TODO: Какую информацию о пользователе нужно передать для генерации токена
@@ -41,11 +42,15 @@ class UserService(BasicService):
         return access_token
 
     def check_access_token(self, access_token: str) -> bool:
-        data = jwt.decode(access_token, JWT_KEY, JWT_METHOD)
-        token_model = TokenModel.parse_obj(data)
-        self.get_all_by_filter({'username': token_model.username})  # checking a user existence
-        now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
-        return token_model.exp > now_int
+        try:
+            data = jwt.decode(access_token, JWT_KEY, JWT_METHOD)
+        except Exception as e:
+            abort(401, f'JWT Exception Error: {e}')
+        else:
+            token_model = TokenModel.parse_obj(data)
+            self.get_all_by_filter({'username': token_model.username})  # checking a user existence
+            # now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
+            return True
 
     def check_refresh_token(self, refresh_token: str) -> bool:
         return self.check_access_token(refresh_token)
@@ -75,13 +80,8 @@ class UserService(BasicService):
         :param password: a password to check
         :return: True or False
         """
-        # if self.dao.get_all_by_filter({'username': username, 'password': password}):
-        #     return True
-        # return False
         password_hash = self.get_hash(password)
-        print(password_hash)
         user_password = self.dao.get_all_by_filter({'username': username})[0]['password']
-        print(user_password)
         return hmac.compare_digest(password_hash.encode('utf-8'), user_password.encode('utf-8'))
 
     def check_password_with_hash(self, user_password: str, password_hash: str) -> bool:
