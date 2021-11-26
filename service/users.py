@@ -41,13 +41,14 @@ class UserService(BasicService):
         return access_token
 
     def check_access_token(self, access_token: str) -> bool:
-        token_model = TokenModel.parse_obj(jwt.decode(access_token, JWT_KEY, JWT_METHOD))
-        print(token_model)
-        # self.get_all_by_filter({'username': data['username']})  # checking a user existence
+        data = jwt.decode(access_token, JWT_KEY, JWT_METHOD)
+        token_model = TokenModel.parse_obj(data)
         self.get_all_by_filter({'username': token_model.username})  # checking a user existence
-
         now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
         return token_model.exp > now_int
+
+    def check_refresh_token(self, refresh_token: str) -> bool:
+        return self.check_access_token(refresh_token)
 
     @staticmethod
     def gen_jwt(user_obj: dict):
@@ -60,9 +61,12 @@ class UserService(BasicService):
         ends_at = datetime.datetime.utcnow() + datetime.timedelta(days=R_TOKEN_EXP_TIME_DAYS)
         user_obj['exp'] = calendar.timegm(ends_at.timetuple())
         refresh_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
-        print(type(access_token))
-        print(jwt.decode(access_token, JWT_KEY, JWT_METHOD))
+
         return {'access_token': access_token, 'refresh_token': refresh_token}
+
+    def refresh_jwt(self, refresh_token: str):
+        data = jwt.decode(refresh_token, JWT_KEY, JWT_METHOD)
+        return self.gen_jwt(data)
 
     def check_password(self, username: str, password: str) -> bool:
         """
