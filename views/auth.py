@@ -1,7 +1,6 @@
 from flask_restx import Resource, Namespace
-from flask import jsonify, request, abort
+from flask import abort
 from implemented import user_service
-from errors import NoContentError
 from pydantic import BaseModel
 from flask_pydantic import validate
 
@@ -54,7 +53,6 @@ class AuthsView(Resource):
         """
         Refresh tokens
         """
-        # brt = body.refresh_token
         if not user_service.check_refresh_token(body.refresh_token):
             abort(401, {'error': 'Refresh token non valid'})
 

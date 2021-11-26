@@ -4,7 +4,8 @@
 from setup_db import db
 from dao.model.directors import DirectorBM
 from dao.model.genres import GenreBM
-# from dao.model.mixin import ApiMixin
+from pydantic import BaseModel
+from typing import Optional
 
 
 class Movie(db.Model):
@@ -24,10 +25,6 @@ class Movie(db.Model):
         return f"<Movie {self.title}>"
 
 
-from pydantic import BaseModel  # noqa
-from typing import Optional  # noqa
-
-
 class MovieBMSimple(BaseModel):
     id: Optional[int]
     description: str
@@ -45,6 +42,3 @@ class MovieBMSimple(BaseModel):
 class MovieBM(MovieBMSimple):
     director: DirectorBM
     genre: GenreBM
-
-    # class Config:
-    #     orm_mode = True

@@ -5,12 +5,10 @@ import jwt
 from constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from constants import JWT_KEY, JWT_METHOD, AC_TOKEN_EXP_TIME_MIN, R_TOKEN_EXP_TIME_DAYS
 from service.basic import BasicService
-from errors import BadRequestError, NotFoundError
 import datetime
 import calendar
 from pydantic import BaseModel
 from flask import abort  # TODO: exclude flask
-# from implemented import rtoken_service
 
 from dao.model.rtokens import RToken, RTokenBM
 from dao.rtokens import RTokenDAO

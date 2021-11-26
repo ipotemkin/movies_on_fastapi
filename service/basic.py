@@ -1,6 +1,3 @@
-# from dao.model. import # from errors import BadRequestError
-
-
 class BasicService:
     def __init__(self, dao):
         self.dao = dao

@@ -2,7 +2,7 @@
 # сюда импортируются сервисы из пакета service
 
 from flask import request
-from flask_restx import Resource, Namespace, reqparse
+from flask_restx import Resource, Namespace
 from implemented import genre_service
 from utils import auth_required, admin_required
 
