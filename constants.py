@@ -12,6 +12,6 @@ R_TOKEN_EXP_TIME_DAYS = 1
 JWT_KEY = 'SkyPro2021!'
 JWT_METHOD = 'HS256'
 
-# 'vasya' = 'my_little_pony'
-# 'oleg' = 'SkySmart'
-# 'oleg2' = 'SkyPro'
+# 'vasya' = 'my_little_pony', user
+# 'oleg' = 'SkySmart', user
+# 'oleg2' = 'SkyPro', admin
