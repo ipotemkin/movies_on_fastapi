@@ -4,6 +4,7 @@
 from flask import request
 from flask_restx import Resource, Namespace, reqparse
 from implemented import genre_service
+from utils import auth_required, admin_required
 
 genre_ns = Namespace('genres', description="Жанры")
 
@@ -11,6 +12,7 @@ genre_ns = Namespace('genres', description="Жанры")
 @genre_ns.route('/')
 class GenresView(Resource):
     @staticmethod
+    @auth_required
     def get():
         """
         Get all genres
@@ -19,6 +21,7 @@ class GenresView(Resource):
 
     @staticmethod
     @genre_ns.response(201, 'Created', headers={'Location': 'genres_genre_view'})
+    @admin_required
     def post():
         """
         Add a new genre
@@ -31,6 +34,7 @@ class GenresView(Resource):
 @genre_ns.doc(params={'gid': 'Идентификатор жанра'})
 class GenreView(Resource):
     @staticmethod
+    @auth_required
     def get(gid: int):
         """
         Get a genre with the given gid
@@ -38,6 +42,7 @@ class GenreView(Resource):
         return genre_service.get_one(gid)
 
     @staticmethod
+    @admin_required
     def patch(gid: int):
         """
         Update a genre with the given gid
@@ -46,6 +51,7 @@ class GenreView(Resource):
         return "", 204
 
     @staticmethod
+    @admin_required
     def delete(gid: int):
         """
         Delete a genre with the given gid

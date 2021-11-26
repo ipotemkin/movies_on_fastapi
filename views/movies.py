@@ -1,5 +1,6 @@
 from flask_restx import Resource, Namespace, reqparse
 from implemented import movie_service
+from utils import admin_required, auth_required
 
 movie_ns = Namespace('movies', description="Фильмы")
 parser = reqparse.RequestParser()
@@ -12,6 +13,7 @@ parser.add_argument('year', type=int, help='Фильтрация по году �
 class MoviesView(Resource):
     @staticmethod
     @movie_ns.expect(parser)
+    @auth_required
     def get():
         """
         Get all movies
@@ -23,6 +25,7 @@ class MoviesView(Resource):
     @staticmethod
     # @movie_ns.response(201, 'Created', headers={'Location': 'movies_movie_view'})
     @movie_ns.response(201, 'Created', headers={'Location': 'url нового фильма'})
+    @admin_required
     def post():
         """
         Add a new movie
@@ -35,6 +38,7 @@ class MoviesView(Resource):
 @movie_ns.doc(params={'mid': 'Идентификатор фильма'})
 class MovieView(Resource):
     @staticmethod
+    @auth_required
     def get(mid: int):
         """
         Get a movie with the given mid
@@ -43,6 +47,7 @@ class MovieView(Resource):
 
     @staticmethod
     @movie_ns.response(204, 'Updated')
+    @admin_required
     def patch(mid: int):
         """
         Update a movie with the given mid
@@ -52,6 +57,7 @@ class MovieView(Resource):
 
     @staticmethod
     @movie_ns.response(204, 'Deleted')
+    @admin_required
     def delete(mid: int):
         """
         Delete a movie with the given mid

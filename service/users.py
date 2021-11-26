@@ -21,9 +21,6 @@ rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
 rtoken_service = RTokenService(dao=rtoken_dao)
 
 
-# TODO: Нужно ли передавать пароль для генерации токена?
-# TODO: Какую информацию о пользователе нужно передать для генерации токена
-# TODO: Чем refresh_token отличается от access_token?
 # TODO: Какой код возврата при генерации токенов?
 
 

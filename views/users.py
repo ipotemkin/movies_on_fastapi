@@ -8,7 +8,7 @@ user_ns = Namespace('users', description="Пользователи")
 @user_ns.route('/')
 class UsersView(Resource):
     @staticmethod
-    @auth_required
+    # @auth_required
     def get():
         """
         Get all users
@@ -29,6 +29,7 @@ class UsersView(Resource):
 @user_ns.doc(params={'uid': 'Идентификатор пользователя'})
 class UserView(Resource):
     @staticmethod
+    @auth_required
     def get(uid: int):
         """
         Get a user with the given uid
@@ -36,6 +37,7 @@ class UserView(Resource):
         return user_service.get_one(uid)
 
     @staticmethod
+    @admin_required
     def patch(uid: int):
         """
         Update a user with the given uid
