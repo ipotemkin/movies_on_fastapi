@@ -5,5 +5,13 @@
 
 # CONSTANT_NAME = "value"
 # LOG_DIR = "logs"
-PWD_HASH_SALT = b'secret here'
+PWD_HASH_SALT = b'the highest secret possible'
 PWD_HASH_ITERATIONS = 100_000
+AC_TOKEN_EXP_TIME_MIN = 1
+R_TOKEN_EXP_TIME_DAYS = 30
+JWT_KEY = 'SkyPro2021!'
+JWT_METHOD = 'HS256'
+
+# 'vasya' = 'my_little_pony'
+# 'oleg' = 'SkySmart'
+# 'oleg2' = 'SkyPro'

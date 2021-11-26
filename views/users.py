@@ -9,6 +9,8 @@ def auth_required(func):
     def wrapper(*args, **kwargs):
         if 'Authorization' not in request.headers:
             abort(401)
+        token = request.headers['Authorization'].split('Bearer ')[-1]
+
         return func(*args, **kwargs)
 
     return wrapper

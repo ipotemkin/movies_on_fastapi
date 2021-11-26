@@ -9,13 +9,19 @@ auth_ns = Namespace('auth', description="Авторизация")
 
 
 class TokenRequest(BaseModel):
-    login: str
+    username: str
     password: str
+
+    class Config:
+        orm_mode = True
 
 
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
+
+    class Config:
+        orm_mode = True
 
 
 @auth_ns.route('/')
@@ -27,10 +33,13 @@ class AuthsView(Resource):
         """
         Generate tokens
         """
-        if user_service.check_password(username=body.login, password=body.password):
-            data = body.dict()
-            return TokenResponse(access_token=user_service.gen_token(data),
-                                 refresh_token=user_service.gen_token(data)), 201
+        user = user_service.get_all_by_filter({'username': body.username})[0]
+
+        if (password_hash := user.get('password', None)) is None:
+            return {'error': 'No password set'}, 400
+
+        if user_service.check_password_with_hash(user_password=body.password, password_hash=password_hash):
+            return user_service.gen_jwt({'username': user['username'], 'role': user['role']}), 201
 
         return "", 401
 
