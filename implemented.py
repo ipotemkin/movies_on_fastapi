@@ -21,6 +21,10 @@ from dao.model.users import User, UserBM
 from dao.users import UserDAO
 from service.users import UserService
 
+# from dao.model.rtokens import RToken, RTokenBM
+# from dao.rtokens import RTokenDAO
+# from service.rtokens import RTokenService
+
 from setup_db import db
 
 director_dao = DirectorDAO(session=db.session, model=Director, schema=DirectorBM)
@@ -37,5 +41,5 @@ movie_service = MovieService(dao=movie_dao)
 user_dao = UserDAO(session=db.session, model=User, schema=UserBM)
 user_service = UserService(dao=user_dao)
 
-# user_dao = UserDAO(session=db.session, model=User, schema=UserBM)
-# auth_service = UserService(dao=user_dao)
+# rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
+# rtoken_service = RTokenService(dao=rtoken_dao)

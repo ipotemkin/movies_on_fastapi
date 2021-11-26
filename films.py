@@ -11,6 +11,7 @@ from dao.model.movies import Movie
 from dao.model.directors import Director
 from dao.model.genres import Genre
 from dao.model.users import User
+from dao.model.rtokens import RToken
 
 from views.movies import movie_ns
 from views.directors import director_ns
@@ -62,7 +63,7 @@ app = create_app(Config())
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'Movie': Movie, 'Director': Director, 'Genre': Genre, 'User': User}
+    return {'db': db, 'Movie': Movie, 'Director': Director, 'Genre': Genre, 'User': User, 'RToken': RToken}
 
 
 if __name__ == '__main__':

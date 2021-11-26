@@ -27,7 +27,8 @@ class BasicDAO:
         # to check whether the new_obj meets the model; it will be unnecessary after DB migration
         try:
             self.schema.parse_obj(new_obj)
-        except Exception:
+        except Exception as e:
+            print(f'Error: {e}')
             raise ValidationError
 
         try:

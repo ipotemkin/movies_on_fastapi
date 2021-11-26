@@ -10,6 +10,16 @@ import datetime
 import calendar
 from pydantic import BaseModel
 from flask import abort  # TODO: exclude flask
+# from implemented import rtoken_service
+
+from dao.model.rtokens import RToken, RTokenBM
+from dao.rtokens import RTokenDAO
+from service.rtokens import RTokenService
+from setup_db import db
+
+rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
+rtoken_service = RTokenService(dao=rtoken_dao)
+
 
 # TODO: Нужно ли передавать пароль для генерации токена?
 # TODO: Какую информацию о пользователе нужно передать для генерации токена
@@ -36,10 +46,10 @@ class UserService(BasicService):
             PWD_HASH_ITERATIONS
         ).decode("utf-8", "ignore")
 
-    @staticmethod
-    def gen_token(data):
-        access_token = jwt.encode(data, 's3cR$eT', 'HS256')
-        return access_token
+    # @staticmethod
+    # def gen_token(data):
+    #     access_token = jwt.encode(data, 's3cR$eT', 'HS256')
+    #     return access_token
 
     def check_access_token(self, access_token: str) -> bool:
         try:
@@ -53,6 +63,10 @@ class UserService(BasicService):
             return True
 
     def check_refresh_token(self, refresh_token: str) -> bool:
+        rtoken = rtoken_service.get_all_by_filter({'token': refresh_token})
+        if not rtoken:
+            abort(401, 'Error: Refresh Token is already used or invalid')
+        rtoken_service.delete(rtoken[0]['id'])
         return self.check_access_token(refresh_token)
 
     @staticmethod
@@ -66,6 +80,8 @@ class UserService(BasicService):
         ends_at = datetime.datetime.utcnow() + datetime.timedelta(days=R_TOKEN_EXP_TIME_DAYS)
         user_obj['exp'] = calendar.timegm(ends_at.timetuple())
         refresh_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
+
+        rtoken_service.create({'token': refresh_token})
 
         return {'access_token': access_token, 'refresh_token': refresh_token}
 
