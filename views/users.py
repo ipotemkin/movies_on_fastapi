@@ -1,24 +1,8 @@
-from flask import request, abort
 from flask_restx import Resource, Namespace
 from implemented import user_service
-import jwt
-from constants import JWT_KEY, JWT_METHOD
+from utils import auth_required, admin_required
 
 user_ns = Namespace('users', description="Пользователи")
-
-
-def auth_required(func):
-    def wrapper(*args, **kwargs):
-        if 'Authorization' not in request.headers:
-            abort(401, 'Authorization Error')
-        token = request.headers['Authorization'].split('Bearer ')[-1]
-        try:
-            user = jwt.decode(token, JWT_KEY, JWT_METHOD)
-        except Exception as e:
-            abort(401, f'JWT Decode Exception: {e}')
-        return func(*args, **kwargs)
-
-    return wrapper
 
 
 @user_ns.route('/')
@@ -45,7 +29,6 @@ class UsersView(Resource):
 @user_ns.doc(params={'uid': 'Идентификатор пользователя'})
 class UserView(Resource):
     @staticmethod
-    # @auth_required
     def get(uid: int):
         """
         Get a user with the given uid
@@ -57,9 +40,10 @@ class UserView(Resource):
         """
         Update a user with the given uid
         """
-        return user_service.update(request.json, uid), 204
+        return user_service.update(user_ns.payload, uid), 204
 
     @staticmethod
+    @admin_required
     def delete(uid: int):
         """
         Delete a user with the given uid
