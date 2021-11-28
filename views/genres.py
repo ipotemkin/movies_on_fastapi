@@ -15,7 +15,7 @@ class GenresView(Resource):
     @auth_required
     def get():
         """
-        Get all genres
+        Получить все жанры / Get all genres
         """
         return genre_service.get_all()
 
@@ -24,7 +24,7 @@ class GenresView(Resource):
     @admin_required
     def post():
         """
-        Add a new genre
+        Добавить новый жанр / Add a new genre
         """
         obj = genre_service.create(genre_ns.payload)
         return "", 201, {'Location': obj.id}
@@ -37,7 +37,7 @@ class GenreView(Resource):
     @auth_required
     def get(gid: int):
         """
-        Get a genre with the given gid
+        Получить жанр с указанным ID / Get a genre with the given gid
         """
         return genre_service.get_one(gid)
 
@@ -45,7 +45,7 @@ class GenreView(Resource):
     @admin_required
     def patch(gid: int):
         """
-        Update a genre with the given gid
+        Обновить жанр с указанным ID / Update a genre with the given gid
         """
         genre_service.update(request.json, gid)
         return "", 204
@@ -54,7 +54,7 @@ class GenreView(Resource):
     @admin_required
     def delete(gid: int):
         """
-        Delete a genre with the given gid
+        Удалить жанр с указанным ID / Delete a genre with the given gid
         """
         genre_service.delete(gid)
         return "", 204

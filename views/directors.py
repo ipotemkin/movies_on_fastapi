@@ -15,7 +15,7 @@ class DirectorsView(Resource):
     @auth_required
     def get():
         """
-        Get all directors
+        Получить всех режиссеров / Get all directors
         """
         return director_service.get_all()
 
@@ -24,7 +24,7 @@ class DirectorsView(Resource):
     @admin_required
     def post():
         """
-        Add a new director
+        Добавить нового режиссера / Add a new director
         """
         obj = director_service.create(director_ns.payload)
         return "", 201, {'Location': obj.id}
@@ -37,7 +37,7 @@ class DirectorView(Resource):
     @auth_required
     def get(did: int):
         """
-        Get a director with the given did
+        Получить режиссера с указанным ID / Get a director with the given did
         """
         return director_service.get_one(did)
 
@@ -45,7 +45,7 @@ class DirectorView(Resource):
     @admin_required
     def patch(did: int):
         """
-        Update a director with the given did
+        Обновить режиссера с указанным ID / Update a director with the given did
         """
         return director_service.update(request.json, did), 204
 
@@ -53,6 +53,6 @@ class DirectorView(Resource):
     @admin_required
     def delete(did: int):
         """
-        Delete a director with the given did
+        Удалить режиссера с указанным ID / Delete a director with the given did
         """
         return director_service.delete(did), 204

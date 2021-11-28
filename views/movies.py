@@ -16,8 +16,8 @@ class MoviesView(Resource):
     @auth_required
     def get():
         """
-        Get all movies
-        You can additionally specify director_id, genre_id, year (any mix of these parameters)
+        Получить все фильмы / Get all movies
+        Можно фильтровать по режиссеру, жанру и году выпуска / You can additionally specify director_id, genre_id, year (any mix of these parameters)
         """
         req = {key: value for key, value in parser.parse_args().items() if value is not None}
         return movie_service.get_all_by_filter(req)
@@ -28,7 +28,7 @@ class MoviesView(Resource):
     @admin_required
     def post():
         """
-        Add a new movie
+        Добавить новый фильм / Add a new movie
         """
         obj = movie_service.create(movie_ns.payload)
         return "", 201, {'Location': obj.id}
@@ -41,7 +41,7 @@ class MovieView(Resource):
     @auth_required
     def get(mid: int):
         """
-        Get a movie with the given mid
+        Получить фильм с указанным ID / Get a movie with the given mid
         """
         return movie_service.get_one(mid)
 
@@ -50,7 +50,7 @@ class MovieView(Resource):
     @admin_required
     def patch(mid: int):
         """
-        Update a movie with the given mid
+        Обновить фильм с указанным ID / Update a movie with the given mid
         """
         movie_service.update(movie_ns.payload, mid)
         return {}, 204
@@ -60,7 +60,7 @@ class MovieView(Resource):
     @admin_required
     def delete(mid: int):
         """
-        Delete a movie with the given mid
+        Удалить фильм с указанным ID / Delete a movie with the given mid
         """
         movie_service.delete(mid)
         return "", 204

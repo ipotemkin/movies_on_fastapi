@@ -11,7 +11,7 @@ class UsersView(Resource):
     # @auth_required
     def get():
         """
-        Get all users
+        Получить всех пользователей / Get all users
         """
         return user_service.get_all()
 
@@ -19,7 +19,7 @@ class UsersView(Resource):
     @user_ns.response(201, 'Created', headers={'Location': 'users_user_view'})
     def post():
         """
-        Add a new user
+        Добавить нового пользователя / Add a new user
         """
         obj = user_service.create(user_ns.payload)
         return "", 201, {'Location': obj.id}
@@ -32,7 +32,7 @@ class UserView(Resource):
     @auth_required
     def get(uid: int):
         """
-        Get a user with the given uid
+        Получить пользователя по ID / Get a user with the given uid
         """
         return user_service.get_one(uid)
 
@@ -40,7 +40,7 @@ class UserView(Resource):
     @admin_required
     def patch(uid: int):
         """
-        Update a user with the given uid
+        Обновить пользователя с указанным ID / Update a user with the given uid
         """
         return user_service.update(user_ns.payload, uid), 204
 
@@ -48,6 +48,6 @@ class UserView(Resource):
     @admin_required
     def delete(uid: int):
         """
-        Delete a user with the given uid
+        Удалить пользователя с указанным ID / Delete a user with the given uid
         """
         return user_service.delete(uid), 204

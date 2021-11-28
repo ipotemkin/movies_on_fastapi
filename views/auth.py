@@ -34,7 +34,7 @@ class AuthsView(Resource):
     @validate()
     def post(body: TokenRequest):
         """
-        Generate tokens
+        Получить токены / Generate tokens
         """
         user = user_service.get_all_by_filter({'username': body.username})[0]
 
@@ -51,7 +51,7 @@ class AuthsView(Resource):
     @validate()
     def put(body: RefreshTokensRequest):
         """
-        Refresh tokens
+        Обновить токены / Refresh tokens
         """
         if not user_service.check_refresh_token(body.refresh_token):
             abort(401, {'error': 'Refresh token non valid'})
