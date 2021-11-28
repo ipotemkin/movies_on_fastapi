@@ -11,8 +11,9 @@ class BasicDAO:
         self.schema = schema  # if validation needed while creating/updating a record
         self.nested_schema = nested_schema if nested_schema else schema
 
-    def get_all(self):
-        if not (objs := self.session.query(self.model).all()):
+    def get_all(self, raise_errors=True):
+        objs = self.session.query(self.model).all()
+        if raise_errors and not objs:
             raise NotFoundError
         return [self.nested_schema.from_orm(obj).dict() for obj in objs]
 

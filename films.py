@@ -11,7 +11,9 @@ from dao.model.movies import Movie
 from dao.model.directors import Director
 from dao.model.genres import Genre
 from dao.model.users import User
-from dao.model.rtokens import RToken
+from dao.model.rtokens import RToken, RTokenBM
+from dao.rtokens import RTokenDAO
+from service.rtokens import RTokenService
 
 from views.movies import movie_ns
 from views.directors import director_ns
@@ -29,6 +31,13 @@ def create_app(config_object):
     app_.url_map.strict_slashes = False
     register_extensions(app_)
     reg_error_handlers(app_)
+
+    # to delete obsolete refresh tokens from DB
+    rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
+    rtoken_service = RTokenService(dao=rtoken_dao)
+    with app_.app_context():
+        rtoken_service.del_expired()
+
     return app_
 
 
