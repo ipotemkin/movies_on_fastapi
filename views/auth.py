@@ -47,7 +47,7 @@ class AuthsView(Resource):
         return user_service.gen_jwt({'username': user['username'], 'role': user['role']}), 201
 
     @staticmethod
-    @auth_ns.response(204, 'Updated', headers={'Location': 'auths_auth_view'})
+    @auth_ns.response(201, 'Updated', headers={'Location': 'auths_auth_view'})
     @validate()
     def put(body: RefreshTokensRequest):
         """

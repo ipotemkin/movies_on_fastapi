@@ -1,6 +1,7 @@
 from flask import request, abort
 import jwt
 from constants import JWT_KEY, JWT_METHOD
+from functools import wraps
 
 
 def jwt_decode():
@@ -16,6 +17,7 @@ def jwt_decode():
 
 
 def auth_required(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         jwt_decode()
         return func(*args, **kwargs)
@@ -23,6 +25,7 @@ def auth_required(func):
 
 
 def admin_required(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         decoded_jwt = jwt_decode()
         role = decoded_jwt.get('role')
