@@ -2,17 +2,16 @@
 # сюда импортируются сервисы из пакета service
 
 from flask import request
-from flask_restx import Resource, Namespace
-from implemented import director_service
+from flask_restx import Resource, Namespace, fields
+from implemented import director_service, directors_model, director_ns
 from utils import auth_required, admin_required
-
-director_ns = Namespace('directors', description="Режиссеры")
 
 
 @director_ns.route('/')
 class DirectorsView(Resource):
     @staticmethod
-    @auth_required
+    # @auth_required
+    @director_ns.marshal_list_with(directors_model)
     def get():
         """
         Получить всех режиссеров / Get all directors
@@ -34,7 +33,8 @@ class DirectorsView(Resource):
 @director_ns.doc(params={'did': 'Идентификатор режиссера'})
 class DirectorView(Resource):
     @staticmethod
-    @auth_required
+    # @auth_required
+    @director_ns.marshal_with(directors_model)
     def get(did: int):
         """
         Получить режиссера с указанным ID / Get a director with the given did

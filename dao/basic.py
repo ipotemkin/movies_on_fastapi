@@ -16,10 +16,12 @@ class BasicDAO:
         if raise_errors and not objs:
             raise NotFoundError
         return [self.nested_schema.from_orm(obj).dict() for obj in objs]
+        # return objs
 
     def get_one(self, uid: int):
         obj = self.session.query(self.model).get_or_404(uid)
         return self.nested_schema.from_orm(obj).dict()
+        # return obj
 
     def create(self, new_obj: dict):
         if not new_obj:

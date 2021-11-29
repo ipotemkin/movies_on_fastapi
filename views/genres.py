@@ -2,17 +2,18 @@
 # сюда импортируются сервисы из пакета service
 
 from flask import request
-from flask_restx import Resource, Namespace
-from implemented import genre_service
+from flask_restx import Resource
+from implemented import genre_service, genre_ns, genres_model
 from utils import auth_required, admin_required
 
-genre_ns = Namespace('genres', description="Жанры")
+# genre_ns = Namespace('genres', description="Жанры")
 
 
 @genre_ns.route('/')
 class GenresView(Resource):
     @staticmethod
-    @auth_required
+    # @auth_required
+    @genre_ns.marshal_list_with(genres_model)
     def get():
         """
         Получить все жанры / Get all genres
@@ -34,7 +35,8 @@ class GenresView(Resource):
 @genre_ns.doc(params={'gid': 'Идентификатор жанра'})
 class GenreView(Resource):
     @staticmethod
-    @auth_required
+    # @auth_required
+    @genre_ns.marshal_with(genres_model)
     def get(gid: int):
         """
         Получить жанр с указанным ID / Get a genre with the given gid

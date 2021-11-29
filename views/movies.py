@@ -1,8 +1,7 @@
-from flask_restx import Resource, Namespace, reqparse
-from implemented import movie_service
+from flask_restx import Resource, reqparse
+from implemented import movie_service, movie_ns, movies_model
 from utils import admin_required, auth_required
 
-movie_ns = Namespace('movies', description="Фильмы")
 parser = reqparse.RequestParser()
 parser.add_argument('director_id', type=int, help='Фильтрация по id режиссера')
 parser.add_argument('genre_id', type=int, help='Фильтрация по id жанра')
@@ -13,7 +12,8 @@ parser.add_argument('year', type=int, help='Фильтрация по году �
 class MoviesView(Resource):
     @staticmethod
     @movie_ns.expect(parser)
-    @auth_required
+    # @auth_required
+    @movie_ns.marshal_list_with(movies_model)
     def get():
         """
         Получить все фильмы / Get all movies
@@ -38,7 +38,8 @@ class MoviesView(Resource):
 @movie_ns.doc(params={'mid': 'Идентификатор фильма'})
 class MovieView(Resource):
     @staticmethod
-    @auth_required
+    # @auth_required
+    @movie_ns.marshal_with(movies_model)
     def get(mid: int):
         """
         Получить фильм с указанным ID / Get a movie with the given mid
