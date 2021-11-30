@@ -27,7 +27,7 @@ from service.users import UserService
 
 from setup_db import db
 
-from flask_restx import Namespace, fields
+from flask_restx import Namespace, fields, reqparse
 
 director_dao = DirectorDAO(session=db.session, model=Director, schema=DirectorBM)
 director_service = DirectorService(dao=director_dao)
@@ -47,6 +47,7 @@ user_service = UserService(dao=user_dao)
 # rtoken_service = RTokenService(dao=rtoken_dao)
 
 movie_ns = Namespace('movies', description="Фильмы")
+# movie_ns.header('Authorization')
 director_ns = Namespace('directors', description="Режиссеры")
 genre_ns = Namespace('genres', description="Жанры")
 
@@ -68,5 +69,10 @@ movies_model = movie_ns.model('MoviesModel',
                                'genre_id': fields.Integer(description='ID жанра'),
                                'trailer': fields.String(description='ссылка на трейлер'),
                                'director': fields.Nested(directors_model, description='словарь с именем режиссера'),
-                               'genre': fields.Nested(genres_model, description='словарь с названием жанра')
+                               'genre': fields.Nested(genres_model, description='словарь с названием жанра'),
+                               # 'director_name': fields.String()
                                })
+
+auth_parser = reqparse.RequestParser()
+auth_parser.add_argument('Authorization', location='headers', type=str,
+                         help='Строка авторизации: укажите токен после Bearer')

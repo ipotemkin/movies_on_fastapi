@@ -46,8 +46,25 @@ def register_extensions(app_):
     db.init_app(app_)
     migrate = Migrate(app_, db)
 
+    # authorizations = {
+    #     'apikey': {
+    #         'type': 'apiKey',
+    #         'in': 'header',
+    #         'name': 'Authorization',
+    #         'tokenUrl': '/auth',
+    #         'flow': 'implicit',
+    #         'authorizationUrl': 'localhost:10001/auth'
+    #     },
+    #     'admin_key': {
+    #         'type': 'admin_key',
+    #         'in': 'header',
+    #         'name': 'Authorization'
+    #     }
+    # }
+    # api = Api(authorizations=authorizations)
+
     api = Api()
-    api.init_app(app_, vrsion='1.0', title='REST API on Flask')
+    api.init_app(app_, vrsion='1.0', title='REST API on Flask')  # , authorizations=authorizations)
     api.add_namespace(movie_ns)
     api.add_namespace(director_ns)
     api.add_namespace(genre_ns)

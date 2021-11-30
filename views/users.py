@@ -1,5 +1,5 @@
 from flask_restx import Resource, Namespace
-from implemented import user_service
+from implemented import user_service, auth_parser
 from utils import auth_required, admin_required
 
 user_ns = Namespace('users', description="Пользователи")
@@ -26,6 +26,7 @@ class UsersView(Resource):
 
 
 @user_ns.route('/<int:uid>')
+@user_ns.expect(auth_parser)
 @user_ns.doc(params={'uid': 'Идентификатор пользователя'})
 class UserView(Resource):
     @staticmethod

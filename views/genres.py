@@ -1,18 +1,13 @@
-# здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки).
-# сюда импортируются сервисы из пакета service
-
-from flask import request
 from flask_restx import Resource
-from implemented import genre_service, genre_ns, genres_model
+from implemented import genre_service, genre_ns, genres_model, auth_parser
 from utils import auth_required, admin_required
-
-# genre_ns = Namespace('genres', description="Жанры")
 
 
 @genre_ns.route('/')
+@genre_ns.expect(auth_parser)
 class GenresView(Resource):
     @staticmethod
-    # @auth_required
+    @auth_required
     @genre_ns.marshal_list_with(genres_model)
     def get():
         """
@@ -32,10 +27,11 @@ class GenresView(Resource):
 
 
 @genre_ns.route('/<int:gid>')
+@genre_ns.expect(auth_parser)
 @genre_ns.doc(params={'gid': 'Идентификатор жанра'})
 class GenreView(Resource):
     @staticmethod
-    # @auth_required
+    @auth_required
     @genre_ns.marshal_with(genres_model)
     def get(gid: int):
         """
@@ -49,7 +45,7 @@ class GenreView(Resource):
         """
         Обновить жанр с указанным ID / Update a genre with the given gid
         """
-        genre_service.update(request.json, gid)
+        genre_service.update(genre_ns.payload, gid)
         return "", 204
 
     @staticmethod
