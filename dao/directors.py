@@ -5,4 +5,6 @@ from dao.basic import BasicDAO
 
 
 class DirectorDAO(BasicDAO):
-    pass
+
+    def __repr__(self):
+        return f'<DirectorDAO (model={self.model})>'
