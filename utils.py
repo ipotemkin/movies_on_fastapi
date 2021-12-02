@@ -20,7 +20,6 @@ def auth_required(func):
     doc_temp = func.__doc__.strip().split('\n')
     doc_temp[0] += ' (authorization required)\n'
     func.__doc__ = ''.join(doc_temp)
-    # += ' (authorization required)'
 
     @wraps(func)
     def wrapper(*args, **kwargs):
