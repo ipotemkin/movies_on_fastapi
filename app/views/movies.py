@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Response
 from app.implemented import movie_service
-from app.dao.model.movies import MovieBM, MovieUpdateBM
+from app.dao.model.movies import MovieUpdateBM, MovieBMSimple
 
 router = APIRouter(prefix='/movies', tags=['movies'])
 
@@ -25,7 +25,7 @@ async def movies_get_one(pk: int):
 
 @router.post('', status_code=status.HTTP_201_CREATED, summary='Добавить фильм',
              response_description="The created item")
-async def movies_post(movie: MovieBM, response: Response):
+async def movies_post(movie: MovieBMSimple, response: Response):
     """
     Добавить фильм:
 

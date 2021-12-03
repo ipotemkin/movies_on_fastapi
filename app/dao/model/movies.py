@@ -2,8 +2,8 @@ from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
-# from app.dao.model.directors import Director
-# from app.dao.model.genres import Genre
+from app.dao.model.directors import DirectorBM
+from app.dao.model.genres import GenreBM
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
@@ -19,8 +19,8 @@ class Movie(Base):
     title = Column(String, nullable=False)
     trailer = Column(String, default="#")
     year = Column(Integer, nullable=False)
-    # director = relationship('Director')
-    # genre = relationship('Genre')
+    director = relationship('Director')
+    genre = relationship('Genre')
 
     def __repr__(self):
         return f"<Movie {self.title}>"
@@ -58,6 +58,6 @@ class MovieBMSimple(MovieUpdateBM):
 
 
 class MovieBM(MovieBMSimple):
-    pass
-    # director: DirectorBM
-    # genre: GenreBM
+    # pass
+    director: DirectorBM
+    genre: GenreBM

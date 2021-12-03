@@ -9,7 +9,7 @@ from app.dao.model.genres import GenreBM, Genre
 from app.service.genres import GenreService
 
 from app.dao.movies import MovieDAO
-from app.dao.model.movies import MovieBM, Movie
+from app.dao.model.movies import MovieBM, Movie, MovieBMSimple
 from app.service.movies import MovieService
 
 
@@ -19,5 +19,5 @@ director_service = DirectorService(dao=director_dao)
 genre_dao = GenreDAO(session=session, model=Genre, schema=GenreBM)
 genre_service = GenreService(dao=genre_dao)
 
-movie_dao = MovieDAO(session=session, model=Movie, schema=MovieBM)
+movie_dao = MovieDAO(session=session, model=Movie, schema=MovieBMSimple, nested_schema=MovieBM)
 movie_service = MovieService(dao=movie_dao)
