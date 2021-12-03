@@ -6,10 +6,20 @@ router = APIRouter(prefix='/movies', tags=['movies'])
 
 
 @router.get('', summary='Получить все фильмы')
-async def movies_get_all():
+async def movies_get_all(director_id: int = None, genre_id: int = None, year: int = None):
     """
     Получить все фильмы
     """
+    query_d = {}
+    if director_id:
+        query_d['director_id'] = director_id
+    if genre_id:
+        query_d['genre_id'] = genre_id
+    if year:
+        query_d['year'] = year
+    if query_d:
+        return movie_service.get_all_by_filter(query_d)
+
     return movie_service.get_all()
 
 
