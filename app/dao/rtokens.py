@@ -1,17 +1,8 @@
-from setup_db import db
-from pydantic import BaseModel
-from typing import Optional
+# это файл для классов доступа к данным (Data Access Object). Здесь должен быть класс с методами доступа к данным
+# здесь в методах можно построить сложные запросы к БД
+
+from dao.basic import BasicDAO
 
 
-class RToken(db.Model):
-    __tablename__ = 'r_token'
-    id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String, nullable=False, unique=True)
-
-
-class RTokenBM(BaseModel):
-    id: Optional[int]
-    token: str
-
-    class Config:
-        orm_mode = True
+class RTokenDAO(BasicDAO):
+    pass

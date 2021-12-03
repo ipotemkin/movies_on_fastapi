@@ -26,6 +26,14 @@ async def run_asql(sql: str):
     return res
 
 
+async def get_one(sql: str):
+    dbase = Database("sqlite:///movies.db")
+    # dbase.connect()
+    res = await dbase.fetch_one(query=sql)  # , values={"id": pk})
+    return res
+
+
+
 # sql = "select * from movie"
 # print(run_sql(sql))
 # # print(*[line for line in res], sep='\n')

@@ -1,18 +1,8 @@
-from setup_db import db
-from pydantic import BaseModel
-from typing import Optional
+# это файл для классов доступа к данным (Data Access Object). Здесь должен быть класс с методами доступа к данным
+# здесь в методах можно построить сложные запросы к БД
+
+from app.dao.basic import BasicDAO
 
 
-class Genre(db.Model):
-    __tablename__ = 'genre'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    # movies = db.relationship('Movie', lazy='dynamic')
-
-
-class GenreBM(BaseModel):
-    id: Optional[int]
-    name: str
-
-    class Config:
-        orm_mode = True
+class GenreDAO(BasicDAO):
+    pass
