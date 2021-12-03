@@ -10,7 +10,7 @@ from flask import Flask
 from sql_test import run_asql, run_sql_alchemy, get_one
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import sessionmaker, Session
-from errors import NotFoundError
+from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
 from app.views import directors, genres, movies
 from databases import Database
 
@@ -41,12 +41,45 @@ app_fastapi.include_router(directors.router)
 app_fastapi.include_router(genres.router)
 
 
+# exception handlers
 @app_fastapi.exception_handler(404)
 @app_fastapi.exception_handler(NotFoundError)
 def not_found_error(request: Request, exc: NotFoundError):
     return JSONResponse(
         status_code=404,
         content={'message': "Not Found"}
+    )
+
+
+@app_fastapi.exception_handler(NoContentError)
+def no_content_error(request: Request, exc: NoContentError):
+    return JSONResponse(
+        status_code=204,
+        content={'message': "No Content"}
+    )
+
+
+@app_fastapi.exception_handler(DatabaseError)
+def database_error(request: Request, exc: DatabaseError):
+    return JSONResponse(
+        status_code=400,
+        content={'message': "Database Error"}
+    )
+
+
+@app_fastapi.exception_handler(BadRequestError)
+def bad_request_error(request: Request, exc: BadRequestError):
+    return JSONResponse(
+        status_code=400,
+        content={'message': "Bad Request"}
+    )
+
+
+@app_fastapi.exception_handler(ValidationError)
+def validation_error(request: Request, exc: ValidationError):
+    return JSONResponse(
+        status_code=400,
+        content={'message': "Validation Error"}
     )
 
 
