@@ -57,19 +57,7 @@ class MovieBMSimple(MovieUpdateBM):
     id: Optional[int]
 
 
-class MovieBM(BaseModel):
-    id: Optional[int]
-    description: str
-    director_id: int
-    genre_id: int
-    rating: float
-    title: str
-    trailer: Optional[str]
-    year: int
-
-    class Config:
-        orm_mode = True
-
+class MovieBM(MovieBMSimple):
+    pass
     # director: DirectorBM
     # genre: GenreBM
-
