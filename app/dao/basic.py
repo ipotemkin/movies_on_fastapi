@@ -43,7 +43,8 @@ class BasicDAO:
         try:
             self.session.add(obj)
             self.session.commit()
-        except Exception:
+        except Exception as e:
+            # print(e)
             raise DatabaseError
         return obj
 

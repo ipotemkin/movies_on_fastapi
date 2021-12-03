@@ -1,0 +1,81 @@
+
+# TEST #1
+INFO:     127.0.0.1:52591 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52591 - "GET /openapi.json HTTP/1.1" 200 OK
+with sqlalchemy [0.04100192s]
+INFO:     127.0.0.1:52600 - "GET /directors HTTP/1.1" 200 OK
+aio with databases [0.01771363s]
+INFO:     127.0.0.1:52619 - "GET /aio/directors HTTP/1.1" 200 OK
+aio with databases [0.00310631s]
+INFO:     127.0.0.1:52634 - "GET /aio/directors HTTP/1.1" 200 OK
+with sqlalchemy [0.00220870s]
+INFO:     127.0.0.1:52634 - "GET /directors HTTP/1.1" 200 OK
+
+
+# TEST #2
+INFO:     127.0.0.1:52723 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52723 - "GET /openapi.json HTTP/1.1" 200 OK
+aio with databases [0.02810510s]
+INFO:     127.0.0.1:52737 - "GET /aio/directors HTTP/1.1" 200 OK
+with sqlalchemy [0.03287772s]
+INFO:     127.0.0.1:52744 - "GET /directors HTTP/1.1" 200 OK
+with sqlalchemy [0.00244736s]
+INFO:     127.0.0.1:52771 - "GET /directors HTTP/1.1" 200 OK
+aio with databases [0.00287208s]
+INFO:     127.0.0.1:52772 - "GET /aio/directors HTTP/1.1" 200 OK
+
+# TEST #3
+INFO:     127.0.0.1:52847 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52847 - "GET /openapi.json HTTP/1.1" 200 OK
+aio with databases [0.01006979s]
+INFO:     127.0.0.1:52866 - "GET /aio/directors HTTP/1.1" 200 OK
+with sqlalchemy [0.01182757s]
+INFO:     127.0.0.1:52879 - "GET /directors HTTP/1.1" 200 OK
+with sqlalchemy [0.00117510s]
+INFO:     127.0.0.1:52888 - "GET /directors HTTP/1.1" 200 OK
+aio with databases [0.00342274s]
+INFO:     127.0.0.1:52895 - "GET /aio/directors HTTP/1.1" 200 OK
+
+# TEST #4
+INFO:     127.0.0.1:53000 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53000 - "GET /openapi.json HTTP/1.1" 200 OK
+with sqlalchemy [0.01418646s]
+INFO:     127.0.0.1:53009 - "GET /directors HTTP/1.1" 200 OK
+aio with databases [0.02554260s]
+INFO:     127.0.0.1:53022 - "GET /aio/directors HTTP/1.1" 200 OK
+aio with databases [0.00252436s]
+INFO:     127.0.0.1:53037 - "GET /aio/directors HTTP/1.1" 200 OK
+with sqlalchemy [0.00161224s]
+INFO:     127.0.0.1:53037 - "GET /directors HTTP/1.1" 200 OK
+
+SQLALCHEMY (0.04100192+0.01418646)/2 = 0,02759419 seconds
+AIO(0.02810510+0.01006979)/2 = 0,019087445 seconds
+
+
+
+
+with flask-sqlalchemy [0.01321769s]
+127.0.0.1 - - [03/Dec/2021 21:08:26] "GET /directors/ HTTP/1.1" 200 -
+
+with flask-sqlalchemy [0.06903354s]
+127.0.0.1 - - [03/Dec/2021 21:09:04] "GET /directors/ HTTP/1.1" 200 -
+
+with flask-sqlalchemy [0.03042974s]
+127.0.0.1 - - [03/Dec/2021 21:09:38] "GET /directors/ HTTP/1.1" 200 -
+
+with flask-sqlalchemy [0.03018758s]
+127.0.0.1 - - [03/Dec/2021 21:10:22] "GET /directors/ HTTP/1.1" 200 -
+
+with flask-sqlalchemy [0.01627262s]
+127.0.0.1 - - [03/Dec/2021 21:10:53] "GET /directors/ HTTP/1.1" 200 -
+
+Average = 0,031828234 seconds
+Average w/o extreme values ([0.06903354s]) = 0,0225269075 sec
+
+
+aio with databases [0.00569739s]
+aio with databases [0.02054576s]
+aio with databases [0.00532066s]
+aio with databases [0.00241848s]
+aio with databases [0.00670852s]
+Average = 0,008138162 sec

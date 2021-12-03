@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Response
 from app.implemented import director_service
 from app.dao.model.directors import DirectorBM, DirectorUpdateBM
+import time
 
 router = APIRouter(prefix='/directors', tags=['directors'])
 
@@ -10,7 +11,11 @@ async def directors_get_all():
     """
     Получить всех режиссеров
     """
-    return director_service.get_all()
+    t0 = time.perf_counter()
+    res = director_service.get_all()
+    elapsed = time.perf_counter() - t0
+    print('with sqlalchemy [%0.8fs]' % elapsed)
+    return res
 
 
 @router.get('/{pk}', summary='Получить режиссера по его ID')

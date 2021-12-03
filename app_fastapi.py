@@ -1,3 +1,5 @@
+import time
+
 from fastapi import FastAPI, Request, status, Header, Response
 
 from fastapi.responses import RedirectResponse, JSONResponse, PlainTextResponse
@@ -10,6 +12,7 @@ from sql_test import run_asql, run_sql_alchemy, get_one
 # from sqlalchemy.orm import sessionmaker, Session
 from errors import NotFoundError
 from app.views import directors, genres, movies
+from databases import Database
 
 
 tags_metadata = [
@@ -28,9 +31,6 @@ tags_metadata = [
 ]
 
 
-# from app.dao.directors import DirectorDAO
-# from app.dao.model.directors import DirectorBM, Director
-
 app_fastapi = FastAPI(title='Movies API on FastAPI',
                       description='This is a refactored app from lessons 18 and 19',
                       version='1.0.0',
@@ -39,15 +39,6 @@ app_fastapi = FastAPI(title='Movies API on FastAPI',
 app_fastapi.include_router(movies.router)
 app_fastapi.include_router(directors.router)
 app_fastapi.include_router(genres.router)
-
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# # db.init_app(dict(SQLALCHEMY_DATABASE_URI='sqlite:///movies.db', SQLALCHEMY_TRACK_MODIFICATIONS=False))
-# db.init_app(app)
-
-
-# director_dao = DirectorDAO(session=session, model=Director, schema=DirectorBM)
 
 
 @app_fastapi.exception_handler(404)
@@ -65,15 +56,18 @@ async def index():
     return RedirectResponse(url='/docs')
 
 
-# directors
-
-
 @app_fastapi.get('/aio/directors')
 async def aio_directors_get_all():
     """
     Получить всех режиссеров
     """
-    return await run_asql('select * from director')
+    dbase = Database("sqlite:///movies.db")
+    t0 = time.perf_counter()
+    # res = await run_asql('select * from director')
+    res = await dbase.fetch_all(query='select * from director')
+    elapsed = time.perf_counter() - t0
+    print('aio with databases [%0.8fs]' % elapsed)
+    return res
 
 
 @app_fastapi.get('/aio/directors/{pk}')
