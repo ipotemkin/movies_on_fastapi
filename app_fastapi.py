@@ -1,15 +1,10 @@
 import time
 
-from fastapi import FastAPI, Request, status, Header, Response
+from fastapi import FastAPI, Request
 
-from fastapi.responses import RedirectResponse, JSONResponse, PlainTextResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from uvicorn import run
-# from implemented import director_service, directors_model, director_ns, auth_parser
-# from setup_db import db
-from flask import Flask
-from sql_test import run_asql, run_sql_alchemy, get_one
-# from sqlalchemy import create_engine
-# from sqlalchemy.orm import sessionmaker, Session
+from sql_test import get_one
 from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
 from app.views import directors, genres, movies
 from databases import Database
