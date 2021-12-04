@@ -5,8 +5,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from app.dao.model.directors import DirectorBM
 from app.dao.model.genres import GenreBM
 from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from setup_db import Base
 
 
 class Movie(Base):
@@ -24,20 +23,6 @@ class Movie(Base):
 
     def __repr__(self):
         return f"<Movie {self.title}>"
-
-
-# пришлось добавить сюда описание классов Genre и Director, чтобы работал ForeignKey
-class Genre(Base):
-    __tablename__ = 'genre'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-
-
-class Director(Base):
-    __tablename__ = 'director'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    # movies = db.relationship('Movie', lazy='dynamic')
 
 
 class MovieUpdateBM(BaseModel):

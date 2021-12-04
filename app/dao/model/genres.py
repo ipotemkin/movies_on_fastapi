@@ -2,8 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
-
-Base = declarative_base()
+from setup_db import Base
 
 
 class Genre(Base):
