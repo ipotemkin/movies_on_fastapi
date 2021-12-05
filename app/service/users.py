@@ -4,19 +4,22 @@ import hmac
 import jwt
 from constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from constants import JWT_KEY, JWT_METHOD, AC_TOKEN_EXP_TIME_MIN, R_TOKEN_EXP_TIME_DAYS
-from service.basic import BasicService
+
+from app.service.basic import BasicService
+from app.dao.users import UserDAO
+
 import datetime
 import calendar
 from pydantic import BaseModel
 from flask import abort  # TODO: exclude flask
 
-from dao.model.rtokens import RToken, RTokenBM
-from dao.rtokens import RTokenDAO
-from service.rtokens import RTokenService
-from setup_db import db
+# from app.dao.model.rtokens import RToken, RTokenBM
+# from app.dao.rtokens import RTokenDAO
+# from app.service.rtokens import RTokenService
+# from setup_db import db
 
-rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
-rtoken_service = RTokenService(dao=rtoken_dao)
+# rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
+# rtoken_service = RTokenService(dao=rtoken_dao)
 
 
 # TODO: Какой код возврата при генерации токенов?
@@ -32,6 +35,9 @@ class TokenModel(UserForTokenModel):
 
 
 class UserService(BasicService):
+    def __init__(self, session):
+        super().__init__(UserDAO(session))
+
     @staticmethod
     def get_hash(password):
         return hashlib.pbkdf2_hmac(
@@ -57,32 +63,32 @@ class UserService(BasicService):
             # now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
             return True
 
-    def check_refresh_token(self, refresh_token: str) -> bool:
-        rtoken = rtoken_service.get_all_by_filter({'token': refresh_token})
-        if not rtoken:
-            abort(401, 'Error: Refresh Token is already used or invalid')
-        rtoken_service.delete(rtoken[0]['id'])
-        return self.check_access_token(refresh_token)
+    # def check_refresh_token(self, refresh_token: str) -> bool:
+    #     rtoken = rtoken_service.get_all_by_filter({'token': refresh_token})
+    #     if not rtoken:
+    #         abort(401, 'Error: Refresh Token is already used or invalid')
+    #     rtoken_service.delete(rtoken[0]['id'])
+    #     return self.check_access_token(refresh_token)
 
-    @staticmethod
-    def gen_jwt(user_obj: dict):
-        UserForTokenModel.parse_obj(user_obj)  # to validate the model
-
-        ends_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=AC_TOKEN_EXP_TIME_MIN)
-        user_obj['exp'] = calendar.timegm(ends_at.timetuple())
-        access_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
-
-        ends_at = datetime.datetime.utcnow() + datetime.timedelta(days=R_TOKEN_EXP_TIME_DAYS)
-        user_obj['exp'] = calendar.timegm(ends_at.timetuple())
-        refresh_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
-
-        rtoken_service.create({'token': refresh_token})
-
-        return {'access_token': access_token, 'refresh_token': refresh_token}
-
-    def refresh_jwt(self, refresh_token: str):
-        data = jwt.decode(refresh_token, JWT_KEY, JWT_METHOD)
-        return self.gen_jwt(data)
+    # @staticmethod
+    # def gen_jwt(user_obj: dict):
+    #     UserForTokenModel.parse_obj(user_obj)  # to validate the model
+    #
+    #     ends_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=AC_TOKEN_EXP_TIME_MIN)
+    #     user_obj['exp'] = calendar.timegm(ends_at.timetuple())
+    #     access_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
+    #
+    #     ends_at = datetime.datetime.utcnow() + datetime.timedelta(days=R_TOKEN_EXP_TIME_DAYS)
+    #     user_obj['exp'] = calendar.timegm(ends_at.timetuple())
+    #     refresh_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
+    #
+    #     rtoken_service.create({'token': refresh_token})
+    #
+    #     return {'access_token': access_token, 'refresh_token': refresh_token}
+    #
+    # def refresh_jwt(self, refresh_token: str):
+    #     data = jwt.decode(refresh_token, JWT_KEY, JWT_METHOD)
+    #     return self.gen_jwt(data)
 
     def check_password(self, username: str, password: str) -> bool:
         """
@@ -111,6 +117,6 @@ class UserService(BasicService):
         return super().create(new_obj)
 
     def update(self, new_obj: dict, uid: int):
-        if 'password' in new_obj:
+        if ('password' in new_obj) and new_obj['password'] is not None:
             new_obj['password'] = self.get_hash(new_obj['password'])
         super().update(new_obj, uid)

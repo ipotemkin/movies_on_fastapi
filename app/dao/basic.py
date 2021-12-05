@@ -1,6 +1,3 @@
-# это файл для классов доступа к данным (Data Access Object). Здесь должен быть класс с методами доступа к данным
-# здесь в методах можно построить сложные запросы к БД
-
 from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError, ValidationError
 
 
@@ -52,11 +49,15 @@ class BasicDAO:
         if not new_obj:
             raise NoContentError
 
+        # excluding None items
+        new_obj = {k: v for k, v in new_obj.items() if v is not None}
+
+        # if exists id in new_obj should be equal to uid
         if ('id' in new_obj) and (uid != new_obj['id']):
             raise BadRequestError
 
+        # checking existence of the record
         q = self.session.query(self.model).filter(self.model.id == uid)
-        # q.first_or_404()  # to test existence of the object
         if not q:
             raise NotFoundError
 

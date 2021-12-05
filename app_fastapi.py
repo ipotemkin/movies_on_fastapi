@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from uvicorn import run
 from sql_test import get_one
 from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
-from app.views import directors, genres, movies
+from app.views import directors, genres, movies, users
 from databases import Database
 
 
@@ -23,6 +23,10 @@ tags_metadata = [
         'name': 'movies',
         'description': 'Операции с фильмами',
     },
+    {
+        'name': 'users',
+        'description': 'Операции с пользователями',
+    },
 ]
 
 
@@ -34,6 +38,7 @@ app_fastapi = FastAPI(title='Movies API on FastAPI',
 app_fastapi.include_router(movies.router)
 app_fastapi.include_router(directors.router)
 app_fastapi.include_router(genres.router)
+app_fastapi.include_router(users.router)
 
 
 # exception handlers
