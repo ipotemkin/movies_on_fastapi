@@ -1,12 +1,17 @@
-from fastapi import APIRouter, status, Response
-from app.implemented import movie_service
+from fastapi import APIRouter, status, Response, Depends
 from app.dao.model.movies import MovieUpdateBM, MovieBMSimple
+from app.service.movies import MovieService
+from app.dependency import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix='/movies', tags=['movies'])
 
 
 @router.get('', summary='Получить все фильмы')
-async def movies_get_all(director_id: int = None, genre_id: int = None, year: int = None):
+async def movies_get_all(director_id: int = None,
+                         genre_id: int = None,
+                         year: int = None,
+                         db: Session = Depends(get_db)):
     """
     Получить все фильмы
     """
@@ -18,24 +23,24 @@ async def movies_get_all(director_id: int = None, genre_id: int = None, year: in
     if year:
         query_d['year'] = year
     if query_d:
-        return movie_service.get_all_by_filter(query_d)
+        return MovieService(db).get_all_by_filter(query_d)
 
-    return movie_service.get_all()
+    return MovieService(db).get_all()
 
 
 @router.get('/{pk}', summary='Получить фильм по ID')
-async def movies_get_one(pk: int):
+async def movies_get_one(pk: int, db: Session = Depends(get_db)):
     """
     Получить фильм по ID:
 
     - **pk**: ID фильма
     """
-    return movie_service.get_one(pk)
+    return MovieService(db).get_one(pk)
 
 
 @router.post('', status_code=status.HTTP_201_CREATED, summary='Добавить фильм',
              response_description="The created item")
-async def movies_post(movie: MovieBMSimple, response: Response):
+async def movies_post(movie: MovieBMSimple, response: Response, db: Session = Depends(get_db)):
     """
     Добавить фильм:
 
@@ -48,7 +53,7 @@ async def movies_post(movie: MovieBMSimple, response: Response):
     - **year**: год выпуска фильма (обязательный параметр)
     - **trailer**: ссылка на трейлер (необязательный параметр)
     """
-    new_obj = movie_service.create(movie.dict())
+    new_obj = MovieService(db).create(movie.dict())
     response.headers['Location'] = f'{router.prefix}/{new_obj.id}'
     return []
 
@@ -56,7 +61,7 @@ async def movies_post(movie: MovieBMSimple, response: Response):
 @router.patch('/{pk}',
               # status_code=status.HTTP_204_NO_CONTENT,
               summary='Изменить запись о фильме с указанным ID')
-async def movies_update(movie: MovieUpdateBM, pk: int):
+async def movies_update(movie: MovieUpdateBM, pk: int, db: Session = Depends(get_db)):
     """
     Изменить запись о фильме с указанным ID:
 
@@ -68,13 +73,13 @@ async def movies_update(movie: MovieUpdateBM, pk: int):
     - **year**: год выпуска фильма
     - **trailer**: ссылка на трейлер
     """
-    return movie_service.update(movie.dict(), pk)
+    return MovieService(db).update(movie.dict(), pk)
 
 
 @router.delete('/{pk}', status_code=status.HTTP_200_OK, summary='Удалить запись о фильме с указанным ID')
-async def movies_delete(pk: int):
+async def movies_delete(pk: int, db: Session = Depends(get_db)):
     """
     Удалить запись о фильме с указанным ID:
     """
-    movie_service.delete(pk)
+    MovieService(db).delete(pk)
     # return None

@@ -32,7 +32,7 @@ class BasicDAO:
         try:
             self.schema.parse_obj(new_obj)
         except Exception as e:
-            print(f'Error: {e}')
+            # print(f'Error: {e}')
             raise ValidationError
 
         try:

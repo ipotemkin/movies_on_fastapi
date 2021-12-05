@@ -1,10 +1,10 @@
-# это файл для классов доступа к данным (Data Access Object). Здесь должен быть класс с методами доступа к данным
-# здесь в методах можно построить сложные запросы к БД
-
 from app.dao.basic import BasicDAO
+from app.dao.model.directors import Director, DirectorBM
 
 
 class DirectorDAO(BasicDAO):
+    def __init__(self, session, model=Director, schema=DirectorBM):
+        super().__init__(session, model, schema)
 
     def __repr__(self):
         return f'<DirectorDAO (model={self.model})>'
