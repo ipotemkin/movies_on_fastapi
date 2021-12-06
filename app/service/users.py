@@ -1,13 +1,11 @@
 import hashlib
 import hmac
 
-from fastapi import Depends, HTTPException, status
-from app.dependency import get_db
-from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 
 import jwt
-from constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
-from constants import JWT_KEY, JWT_METHOD, AC_TOKEN_EXP_TIME_MIN, R_TOKEN_EXP_TIME_DAYS
+from app.constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
+from app.constants import JWT_KEY, JWT_METHOD, AC_TOKEN_EXP_TIME_MIN, R_TOKEN_EXP_TIME_DAYS
 
 from app.service.basic import BasicService
 from app.dao.users import UserDAO
@@ -15,23 +13,16 @@ from app.dao.users import UserDAO
 import datetime
 import calendar
 from pydantic import BaseModel
-from flask import abort  # TODO: exclude flask
 
-# from app.dao.model.rtokens import RToken, RTokenBM
-# from app.dao.rtokens import RTokenDAO
 from app.service.rtokens import RTokenService
-# from setup_db import db
-
-# rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
-# rtoken_service = RTokenService(dao=rtoken_dao)
-
-
-# TODO: Какой код возврата при генерации токенов?
 
 
 class UserForTokenModel(BaseModel):
     username: str
     role: str
+
+    class Config:
+        orm_mode = True
 
 
 class TokenModel(UserForTokenModel):
@@ -56,16 +47,17 @@ class UserService(BasicService):
     #     access_token = jwt.encode(data, 's3cR$eT', 'HS256')
     #     return access_token
 
-    def check_access_token(self, access_token: str) -> bool:
+    @staticmethod
+    def check_access_token(access_token: str):
         try:
             data = jwt.decode(access_token, JWT_KEY, JWT_METHOD)
         except Exception as e:
-            abort(401, f'JWT Exception Error: {e}')
-        else:
-            token_model = TokenModel.parse_obj(data)
-            self.get_all_by_filter({'username': token_model.username})  # checking a user existence
-            # now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
-            return True
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f'JWT Exception Error: {e}',
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return TokenModel.parse_obj(data)
 
     def check_refresh_token(self, refresh_token: str) -> bool:
         token = RTokenService(self.dao.session).get_all_by_filter({'token': refresh_token})
@@ -93,7 +85,6 @@ class UserService(BasicService):
         RTokenService(self.dao.session).create({'token': refresh_token})
 
         return {'access_token': access_token, 'refresh_token': refresh_token, 'token_type': 'bearer'}
-        # return {'access_token': access_token, 'token_type': 'bearer'}
 
     def refresh_jwt(self, refresh_token: str):
         data = jwt.decode(refresh_token, JWT_KEY, JWT_METHOD)

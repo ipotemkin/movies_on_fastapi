@@ -1,4 +1,4 @@
-from errors import NotFoundError, NoContentError, BadRequestError, DatabaseError, ValidationError
+from app.errors import NotFoundError, NoContentError, BadRequestError, DatabaseError, ValidationError
 
 
 class BasicDAO:

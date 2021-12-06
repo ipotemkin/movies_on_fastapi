@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declared_attr
 
 from setup_db import db
-from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
+from app.errors import NoContentError, DatabaseError, BadRequestError
 
 
 class ApiMixin:

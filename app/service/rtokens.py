@@ -1,7 +1,7 @@
 from app.service.basic import BasicService
 from app.dao.rtokens import RTokenDAO
 import jwt
-from constants import JWT_KEY, JWT_METHOD
+from app.constants import JWT_KEY, JWT_METHOD
 
 # from implemented import user_service
 

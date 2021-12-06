@@ -1,11 +1,11 @@
 import time
 
-from fastapi import FastAPI, Request, Depends
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 from uvicorn import run
 from sql_test import get_one
-from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
+from app.errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
 from app.views import directors, genres, movies, users, auth, tokens
 from databases import Database
 
@@ -138,7 +138,6 @@ async def aio_directors_get_one(pk: int):
     Получить режиссера по ID
     """
     return await get_one(f'select * from director where id = {pk} limit 1')
-
 
 
 if __name__ == '__main__':

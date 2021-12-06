@@ -1,7 +1,7 @@
 from setup_db import SessionLocal
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 import jwt
-from constants import JWT_KEY, JWT_METHOD
+from app.constants import JWT_KEY, JWT_METHOD
 from fastapi import HTTPException, status, Depends
 from app.service.rtokens import RTokenService
 
