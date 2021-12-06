@@ -67,8 +67,8 @@ class UserService(BasicService):
             # now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
             return True
 
-    def check_refresh_token(self, refresh_token: str, db: Session = Depends(get_db)) -> bool:
-        token = RTokenService(db).get_all_by_filter({'token': refresh_token})
+    def check_refresh_token(self, refresh_token: str) -> bool:
+        token = RTokenService(self.dao.session).get_all_by_filter({'token': refresh_token})
         if not token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -76,7 +76,7 @@ class UserService(BasicService):
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        RTokenService(db).delete(token[0]['id'])
+        RTokenService(self.dao.session).delete(token[0]['id'])
         return self.check_access_token(refresh_token)
 
     def gen_jwt(self, user_obj: dict):

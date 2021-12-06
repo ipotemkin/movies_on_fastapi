@@ -87,7 +87,7 @@ def decoded_jwt(token: str = Depends(oauth2_scheme)):
 #     return user
 
 
-@router.post('', response_model=TokenResponse, summary='Получить токены')
+@router.post('', status_code=status.HTTP_201_CREATED, response_model=TokenResponse, summary='Получить токены')
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     Получить токены / Generate tokens
@@ -96,19 +96,19 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return UserService(db).gen_jwt({'username': user['username'], 'role': user['role']})
 
 
-# @router.put('', response_model=TokenResponse, summary='Обновить токены')
-# async def refresh_tokens(body: RefreshTokensRequest, db: Session = Depends(get_db)):
-#     """
-#     Обновить токены / Refresh tokens
-#     """
-#     if not UserService(db).check_refresh_token(body.refresh_token):
-#         raise HTTPException(
-#                     status_code=status.HTTP_401_UNAUTHORIZED,
-#                     detail="Refresh token non valid",
-#                     headers={"WWW-Authenticate": "Bearer"},
-#                 )
-#
-#     return UserService(db).refresh_jwt(body.refresh_token)
+@router.put('', status_code=status.HTTP_201_CREATED, response_model=TokenResponse, summary='Обновить токены')
+async def refresh_tokens(body: RefreshTokensRequest, db: Session = Depends(get_db)):
+    """
+    Обновить токены / Refresh tokens
+    """
+    if not UserService(db).check_refresh_token(body.refresh_token):
+        raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Refresh token non valid",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+    return UserService(db).refresh_jwt(body.refresh_token)
 
 # @auth_ns.route('/')
 # class AuthsView(Resource):

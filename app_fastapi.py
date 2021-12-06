@@ -2,7 +2,6 @@ import time
 
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
-from fastapi.security import OAuth2PasswordBearer
 
 from uvicorn import run
 from sql_test import get_one
@@ -10,7 +9,8 @@ from errors import NotFoundError, NoContentError, ValidationError, DatabaseError
 from app.views import directors, genres, movies, users, auth
 from databases import Database
 
-from app.dependency import oauth2_scheme
+from app.dependency import oauth2_scheme, del_expired_tokens
+
 
 tags_metadata = [
     {
@@ -33,6 +33,14 @@ tags_metadata = [
         'name': 'auth',
         'description': 'Операции с токенами',
     },
+    {
+        'name': 'aio',
+        'description': 'Асинхронные операции с базой (тест)',
+    },
+    {
+        'name': 'docs',
+        'description': 'Документация',
+    },
 ]
 
 
@@ -47,6 +55,7 @@ app_fastapi.include_router(genres.router)
 app_fastapi.include_router(users.router)
 app_fastapi.include_router(auth.router)
 
+del_expired_tokens()
 
 # exception handlers
 @app_fastapi.exception_handler(404)
@@ -91,17 +100,17 @@ def validation_error(request: Request, exc: ValidationError):
 
 
 # перенаправляем на страницу документации
-@app_fastapi.get('/')
+@app_fastapi.get('/', tags=['docs'], summary='Документация')
 async def index():
     return RedirectResponse(url='/docs')
 
 
-@app_fastapi.get('/tokens')
-async def read_tokens(token: str = Depends(oauth2_scheme)):
-    return {'token': token}
+# @app_fastapi.get('/tokens')
+# async def read_tokens(token: str = Depends(oauth2_scheme)):
+#     return {'token': token}
 
 
-@app_fastapi.get('/aio/directors')
+@app_fastapi.get('/aio/directors', tags=['aio'])
 async def aio_directors_get_all():
     """
     Получить всех режиссеров
@@ -115,7 +124,7 @@ async def aio_directors_get_all():
     return res
 
 
-@app_fastapi.get('/aio/directors/{pk}')
+@app_fastapi.get('/aio/directors/{pk}', tags=['aio'])
 async def aio_directors_get_one(pk: int):
     """
     Получить режиссера по ID

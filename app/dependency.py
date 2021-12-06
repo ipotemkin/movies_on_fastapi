@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import jwt
 from constants import JWT_KEY, JWT_METHOD
 from fastapi import HTTPException, status, Depends
+from app.service.rtokens import RTokenService
 
 
 # Dependency
@@ -46,3 +47,9 @@ def valid_admin_token(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     return True
+
+
+def del_expired_tokens():
+    db = SessionLocal()
+    RTokenService(db).del_expired()
+    db.close()
