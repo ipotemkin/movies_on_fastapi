@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status, Response, Depends
 from app.dao.model.users import UserBM, UserUpdateBM
 from app.service.users import UserService
-from app.dependency import get_db
+from app.dependency import get_db, oauth2_scheme, valid_token, valid_admin_token
 from sqlalchemy.orm import Session
 import time
 
-router = APIRouter(prefix='/users', tags=['users'])
+router = APIRouter(prefix='/users', tags=['users'], dependencies=[Depends(valid_admin_token)])
 
 
 @router.get('', summary='Получить всех пользователей')

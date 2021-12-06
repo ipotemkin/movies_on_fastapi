@@ -1,14 +1,16 @@
 import time
 
-from fastapi import FastAPI, Request
-
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.security import OAuth2PasswordBearer
+
 from uvicorn import run
 from sql_test import get_one
 from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
-from app.views import directors, genres, movies, users
+from app.views import directors, genres, movies, users, auth
 from databases import Database
 
+from app.dependency import oauth2_scheme
 
 tags_metadata = [
     {
@@ -27,6 +29,10 @@ tags_metadata = [
         'name': 'users',
         'description': 'Операции с пользователями',
     },
+    {
+        'name': 'auth',
+        'description': 'Операции с токенами',
+    },
 ]
 
 
@@ -39,6 +45,7 @@ app_fastapi.include_router(movies.router)
 app_fastapi.include_router(directors.router)
 app_fastapi.include_router(genres.router)
 app_fastapi.include_router(users.router)
+app_fastapi.include_router(auth.router)
 
 
 # exception handlers
@@ -87,6 +94,11 @@ def validation_error(request: Request, exc: ValidationError):
 @app_fastapi.get('/')
 async def index():
     return RedirectResponse(url='/docs')
+
+
+@app_fastapi.get('/tokens')
+async def read_tokens(token: str = Depends(oauth2_scheme)):
+    return {'token': token}
 
 
 @app_fastapi.get('/aio/directors')

@@ -1,4 +1,5 @@
-from service.basic import BasicService
+from app.service.basic import BasicService
+from app.dao.rtokens import RTokenDAO
 import jwt
 from constants import JWT_KEY, JWT_METHOD
 
@@ -6,6 +7,9 @@ from constants import JWT_KEY, JWT_METHOD
 
 
 class RTokenService(BasicService):
+    def __init__(self, session):
+        super().__init__(RTokenDAO(session))
+
     def del_expired(self):
         tokens = self.dao.get_all(raise_errors=False)
         for token in tokens:

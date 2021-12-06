@@ -1,12 +1,13 @@
-from setup_db import db
+from setup_db import Base
 from pydantic import BaseModel
 from typing import Optional
+from sqlalchemy import Column, Integer, String
 
 
-class RToken(db.Model):
+class RToken(Base):
     __tablename__ = 'r_token'
-    id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String, nullable=False, unique=True)
+    id = Column(Integer, primary_key=True)
+    token = Column(String, nullable=False, unique=True)
 
 
 class RTokenBM(BaseModel):

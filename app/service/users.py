@@ -1,6 +1,10 @@
 import hashlib
 import hmac
 
+from fastapi import Depends, HTTPException, status
+from app.dependency import get_db
+from sqlalchemy.orm import Session
+
 import jwt
 from constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from constants import JWT_KEY, JWT_METHOD, AC_TOKEN_EXP_TIME_MIN, R_TOKEN_EXP_TIME_DAYS
@@ -15,7 +19,7 @@ from flask import abort  # TODO: exclude flask
 
 # from app.dao.model.rtokens import RToken, RTokenBM
 # from app.dao.rtokens import RTokenDAO
-# from app.service.rtokens import RTokenService
+from app.service.rtokens import RTokenService
 # from setup_db import db
 
 # rtoken_dao = RTokenDAO(session=db.session, model=RToken, schema=RTokenBM)
@@ -63,32 +67,37 @@ class UserService(BasicService):
             # now_int = calendar.timegm(datetime.datetime.utcnow().timetuple())
             return True
 
-    # def check_refresh_token(self, refresh_token: str) -> bool:
-    #     rtoken = rtoken_service.get_all_by_filter({'token': refresh_token})
-    #     if not rtoken:
-    #         abort(401, 'Error: Refresh Token is already used or invalid')
-    #     rtoken_service.delete(rtoken[0]['id'])
-    #     return self.check_access_token(refresh_token)
+    def check_refresh_token(self, refresh_token: str, db: Session = Depends(get_db)) -> bool:
+        token = RTokenService(db).get_all_by_filter({'token': refresh_token})
+        if not token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh token is already used or invalid",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
 
-    # @staticmethod
-    # def gen_jwt(user_obj: dict):
-    #     UserForTokenModel.parse_obj(user_obj)  # to validate the model
-    #
-    #     ends_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=AC_TOKEN_EXP_TIME_MIN)
-    #     user_obj['exp'] = calendar.timegm(ends_at.timetuple())
-    #     access_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
-    #
-    #     ends_at = datetime.datetime.utcnow() + datetime.timedelta(days=R_TOKEN_EXP_TIME_DAYS)
-    #     user_obj['exp'] = calendar.timegm(ends_at.timetuple())
-    #     refresh_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
-    #
-    #     rtoken_service.create({'token': refresh_token})
-    #
-    #     return {'access_token': access_token, 'refresh_token': refresh_token}
-    #
-    # def refresh_jwt(self, refresh_token: str):
-    #     data = jwt.decode(refresh_token, JWT_KEY, JWT_METHOD)
-    #     return self.gen_jwt(data)
+        RTokenService(db).delete(token[0]['id'])
+        return self.check_access_token(refresh_token)
+
+    def gen_jwt(self, user_obj: dict):
+        UserForTokenModel.parse_obj(user_obj)  # to validate the model
+
+        ends_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=AC_TOKEN_EXP_TIME_MIN)
+        user_obj['exp'] = calendar.timegm(ends_at.timetuple())
+        access_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
+
+        ends_at = datetime.datetime.utcnow() + datetime.timedelta(days=R_TOKEN_EXP_TIME_DAYS)
+        user_obj['exp'] = calendar.timegm(ends_at.timetuple())
+        refresh_token = jwt.encode(user_obj, JWT_KEY, JWT_METHOD)
+
+        RTokenService(self.dao.session).create({'token': refresh_token})
+
+        return {'access_token': access_token, 'refresh_token': refresh_token, 'token_type': 'bearer'}
+        # return {'access_token': access_token, 'token_type': 'bearer'}
+
+    def refresh_jwt(self, refresh_token: str):
+        data = jwt.decode(refresh_token, JWT_KEY, JWT_METHOD)
+        return self.gen_jwt(data)
 
     def check_password(self, username: str, password: str) -> bool:
         """
