@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, HTTPException, Request
+from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from pydantic import BaseModel
@@ -55,36 +55,11 @@ def authenticate_user(username: str, password: str, db: Session = Depends(get_db
             detail="Incorrect password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    # user = get_user(fake_db, username)
-    # if not user:
-    #     return False
-    # if not verify_password(password, user.hashed_password):
-    #     return False
     return user
 
 
 def decoded_jwt(token: str = Depends(oauth2_scheme)):
     return jwt_decode(token)
-
-
-# async def get_current_user(token: str = Depends(oauth2_scheme)):
-#     credentials_exception = HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Could not validate credentials",
-#         headers={"WWW-Authenticate": "Bearer"},
-#     )
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         username: str = payload.get("sub")
-#         if username is None:
-#             raise credentials_exception
-#         token_data = TokenData(username=username)
-#     except JWTError:
-#         raise credentials_exception
-#     user = get_user(fake_users_db, username=token_data.username)
-#     if user is None:
-#         raise credentials_exception
-#     return user
 
 
 @router.post('', status_code=status.HTTP_201_CREATED, response_model=TokenResponse, summary='Получить токены')
@@ -109,17 +84,3 @@ async def refresh_tokens(body: RefreshTokensRequest, db: Session = Depends(get_d
                 )
 
     return UserService(db).refresh_jwt(body.refresh_token)
-
-# @auth_ns.route('/')
-# class AuthsView(Resource):
-#     @staticmethod
-#     @auth_ns.response(201, 'Updated', headers={'Location': 'auths_auth_view'})
-#     @validate()
-#     def put(body: RefreshTokensRequest):
-#         """
-#         Обновить токены / Refresh tokens
-#         """
-#         if not user_service.check_refresh_token(body.refresh_token):
-#             abort(401, {'error': 'Refresh token non valid'})
-#
-#         return user_service.refresh_jwt(body.refresh_token), 201

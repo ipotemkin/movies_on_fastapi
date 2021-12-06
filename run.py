@@ -9,10 +9,14 @@ from errors import NotFoundError, NoContentError, ValidationError, DatabaseError
 from app.views import directors, genres, movies, users, auth
 from databases import Database
 
-from app.dependency import oauth2_scheme, del_expired_tokens
+from app.dependency import del_expired_tokens
 
 
 tags_metadata = [
+    {
+        'name': 'movies',
+        'description': 'Операции с фильмами',
+    },
     {
         'name': 'directors',
         'description': 'Операции с режиссерами',
@@ -20,10 +24,6 @@ tags_metadata = [
     {
         'name': 'genres',
         'description': 'Операции с жанрами',
-    },
-    {
-        'name': 'movies',
-        'description': 'Операции с фильмами',
     },
     {
         'name': 'users',
@@ -37,29 +37,31 @@ tags_metadata = [
         'name': 'aio',
         'description': 'Асинхронные операции с базой (тест)',
     },
-    {
-        'name': 'docs',
-        'description': 'Документация',
-    },
+    # {
+    #     'name': 'docs',
+    #     'description': 'Документация',
+    # },
 ]
 
 
-app_fastapi = FastAPI(title='Movies API on FastAPI',
-                      description='This is a refactored app from lessons 18 and 19',
-                      version='1.0.0',
-                      openapi_tags=tags_metadata)
+app = FastAPI(title='Movies API on FastAPI',
+              description='This is a refactored app from lessons 18 and 19',
+              version='1.0.0',
+              openapi_tags=tags_metadata,
+              docs_url='/')
 
-app_fastapi.include_router(movies.router)
-app_fastapi.include_router(directors.router)
-app_fastapi.include_router(genres.router)
-app_fastapi.include_router(users.router)
-app_fastapi.include_router(auth.router)
+app.include_router(movies.router)
+app.include_router(directors.router)
+app.include_router(genres.router)
+app.include_router(users.router)
+app.include_router(auth.router)
 
 del_expired_tokens()
 
+
 # exception handlers
-@app_fastapi.exception_handler(404)
-@app_fastapi.exception_handler(NotFoundError)
+@app.exception_handler(404)
+@app.exception_handler(NotFoundError)
 def not_found_error(request: Request, exc: NotFoundError):
     return JSONResponse(
         status_code=404,
@@ -67,7 +69,7 @@ def not_found_error(request: Request, exc: NotFoundError):
     )
 
 
-@app_fastapi.exception_handler(NoContentError)
+@app.exception_handler(NoContentError)
 def no_content_error(request: Request, exc: NoContentError):
     return JSONResponse(
         status_code=204,
@@ -75,7 +77,7 @@ def no_content_error(request: Request, exc: NoContentError):
     )
 
 
-@app_fastapi.exception_handler(DatabaseError)
+@app.exception_handler(DatabaseError)
 def database_error(request: Request, exc: DatabaseError):
     return JSONResponse(
         status_code=400,
@@ -83,7 +85,7 @@ def database_error(request: Request, exc: DatabaseError):
     )
 
 
-@app_fastapi.exception_handler(BadRequestError)
+@app.exception_handler(BadRequestError)
 def bad_request_error(request: Request, exc: BadRequestError):
     return JSONResponse(
         status_code=400,
@@ -91,7 +93,7 @@ def bad_request_error(request: Request, exc: BadRequestError):
     )
 
 
-@app_fastapi.exception_handler(ValidationError)
+@app.exception_handler(ValidationError)
 def validation_error(request: Request, exc: ValidationError):
     return JSONResponse(
         status_code=400,
@@ -100,17 +102,12 @@ def validation_error(request: Request, exc: ValidationError):
 
 
 # перенаправляем на страницу документации
-@app_fastapi.get('/', tags=['docs'], summary='Документация')
-async def index():
-    return RedirectResponse(url='/docs')
+# @app.get('/', tags=['docs'], summary='Документация')
+# async def index():
+#     return RedirectResponse(url='/docs')
 
 
-# @app_fastapi.get('/tokens')
-# async def read_tokens(token: str = Depends(oauth2_scheme)):
-#     return {'token': token}
-
-
-@app_fastapi.get('/aio/directors', tags=['aio'])
+@app.get('/aio/directors', tags=['aio'])
 async def aio_directors_get_all():
     """
     Получить всех режиссеров
@@ -124,7 +121,7 @@ async def aio_directors_get_all():
     return res
 
 
-@app_fastapi.get('/aio/directors/{pk}', tags=['aio'])
+@app.get('/aio/directors/{pk}', tags=['aio'])
 async def aio_directors_get_one(pk: int):
     """
     Получить режиссера по ID
@@ -134,7 +131,7 @@ async def aio_directors_get_one(pk: int):
 
 if __name__ == '__main__':
     run(
-        "app_fastapi:app_fastapi",
+        "run:app",
         host='localhost',
         port=8000,
         reload=True

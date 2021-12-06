@@ -1,11 +1,10 @@
 from fastapi import APIRouter, status, Response, Depends
 from app.dao.model.users import UserBM, UserUpdateBM
 from app.service.users import UserService
-from app.dependency import get_db, oauth2_scheme, valid_token, valid_admin_token
+from app.dependency import get_db, valid_token, valid_admin_token
 from sqlalchemy.orm import Session
-import time
 
-router = APIRouter(prefix='/users', tags=['users'], dependencies=[Depends(valid_admin_token)])
+router = APIRouter(prefix='/users', tags=['users'], dependencies=[Depends(valid_token)])
 
 
 @router.get('', summary='Получить всех пользователей')
@@ -13,11 +12,7 @@ async def users_get_all(db: Session = Depends(get_db)):
     """
     Получить всех пользователей
     """
-    # t0 = time.perf_counter()
-    # res = user_service.get_all()
     res = UserService(session=db).get_all()
-    # elapsed = time.perf_counter() - t0
-    # print('with sqlalchemy [%0.8fs]' % elapsed)
     return res
 
 
@@ -29,7 +24,6 @@ async def users_get_one(pk: int, db: Session = Depends(get_db)):
     - **pk**: ID пользователя
     """
     return UserService(db).get_one(pk)
-    # return user_service.get_one(pk)
 
 
 @router.post('', status_code=status.HTTP_201_CREATED, summary='Добавить пользователя',
@@ -44,14 +38,14 @@ async def users_post(user: UserBM, response: Response, db: Session = Depends(get
     - **password**: пароль пользователя
     """
     new_obj = UserService(db).create(user.dict())
-    # new_obj = user_service.create(user.dict())
     response.headers['Location'] = f'{router.prefix}/{new_obj.id}'
     return []
 
 
 @router.patch('/{pk}',
               # status_code=status.HTTP_204_NO_CONTENT,
-              summary='Изменить запись пользователя с указанным ID')
+              summary='Изменить запись пользователя с указанным ID',
+              dependencies=[Depends(valid_admin_token)])
 async def users_update(user: UserUpdateBM, pk: int, db: Session = Depends(get_db)):
     """
     Изменить запись пользователя с указанным ID:
@@ -61,7 +55,6 @@ async def users_update(user: UserUpdateBM, pk: int, db: Session = Depends(get_db
     - **password**: изменить пароль пользователя
     """
     return UserService(db).update(user.dict(), pk)
-    # return user_service.update(user.dict(), pk)
 
 
 @router.delete('/{pk}', status_code=status.HTTP_200_OK, summary='Удалить запись пользователя с указанным ID')
@@ -70,5 +63,3 @@ async def users_delete(pk: int, db: Session = Depends(get_db)):
     Удалить запись пользователя с указанным ID:
     """
     UserService(db).delete(pk)
-    # user_service.delete(pk)
-    # return None
