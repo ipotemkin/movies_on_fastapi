@@ -6,11 +6,12 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from uvicorn import run
 from sql_test import get_one
 from errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
-from app.views import directors, genres, movies, users, auth
+from app.views import directors, genres, movies, users, auth, tokens
 from databases import Database
 
 from app.dependency import del_expired_tokens
-
+from fastapi_utils.tasks import repeat_every
+import datetime
 
 tags_metadata = [
     {
@@ -37,6 +38,10 @@ tags_metadata = [
         'name': 'aio',
         'description': 'Асинхронные операции с базой (тест)',
     },
+    {
+        'name': 'tokens',
+        'description': 'Операции с базой токенов (тест)',
+    },
     # {
     #     'name': 'docs',
     #     'description': 'Документация',
@@ -55,8 +60,14 @@ app.include_router(directors.router)
 app.include_router(genres.router)
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(tokens.router)
 
-del_expired_tokens()
+
+@app.on_event("startup")
+@repeat_every(seconds=60*60*24)
+def del_expired_tokens_repeat():
+    del_expired_tokens()
+    print('Expired tokens deleted', datetime.datetime.utcnow())  # TODO: remove debug
 
 
 # exception handlers
@@ -127,6 +138,7 @@ async def aio_directors_get_one(pk: int):
     Получить режиссера по ID
     """
     return await get_one(f'select * from director where id = {pk} limit 1')
+
 
 
 if __name__ == '__main__':
