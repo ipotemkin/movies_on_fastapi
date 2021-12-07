@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from uvicorn import run
-from sql_test import get_one
+from app.utils import get_one
 from app.errors import NotFoundError, NoContentError, ValidationError, DatabaseError, BadRequestError
 from app.views import directors, genres, movies, users, auth, tokens
 from databases import Database
@@ -67,7 +67,7 @@ app.include_router(tokens.router)
 @repeat_every(seconds=60*60*24)
 def del_expired_tokens_repeat():
     del_expired_tokens()
-    print('Expired tokens deleted', datetime.datetime.utcnow())  # TODO: remove debug
+    print('Expired tokens deleted', datetime.datetime.utcnow())  # TODO: remove this debug on release
 
 
 # exception handlers
